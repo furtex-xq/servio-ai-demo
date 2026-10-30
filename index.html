@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Рабочее демо Servio AI: закажите как гость, примите заказ как официант, посмотрите выручку как владелец.">
+<style>:root{padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Servio AI Demo Room</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Karla:wght@400;500;600;700&display=swap">
+
+<style>
+/* Layout: one lit room, three doors across the top, and a working phone on a stand between them. */
+:root{
+  --ink:#070605; --raise:#110e0a;
+  --glass:rgba(20,17,12,.80); --glass-soft:rgba(20,17,12,.58);
+  --hair:rgba(247,230,190,.14); --hair-s:rgba(247,230,190,.26);
+  --gold:#D4AF37; --gold-br:#F5C542; --gold-pale:#F7E6BE; --gold-edge:#7A5E18; --gold-dim:#9C7A25;
+  --text:#F6F3EC; --muted:#9C9689; --dim:#827D72;
+  --ok:#3FCE7A; --warn:#E0A93A; --bad:#EA5C5C; --info:#4C9EFF;
+  --display:"Playfair Display",Georgia,serif;
+  --body:"Karla","Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::after{content:"";position:fixed;inset:0;z-index:-1;background:
+  linear-gradient(180deg,rgba(7,6,5,.66),rgba(7,6,5,.56) 30%,rgba(7,6,5,.8) 70%,rgba(7,6,5,.97)),
+  radial-gradient(60% 40% at 74% 6%,rgba(212,175,55,.13),transparent 70%),
+  url("room.webp") center/cover no-repeat;}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:36px 56px}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* masthead */
+.mast{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.mark{width:30px;height:auto}
+.rule{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:11.5px;letter-spacing:.24em;text-transform:uppercase}
+.rule::before,.rule::after{content:"";width:32px;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.55))}
+.rule::after{background:linear-gradient(90deg,rgba(212,175,55,.55),transparent)}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(34px,6.4vw,54px);line-height:1.05;margin:0;text-wrap:balance}
+.standfirst{max-width:56ch;color:var(--muted);margin:0;font-size:15px}
+
+/* doors */
+.doors{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:30px}
+@media (max-width:700px){.doors{grid-template-columns:1fr}}
+.door{text-align:left;background:var(--glass);border:1px solid var(--hair);border-radius:16px;padding:13px 16px;display:grid;gap:3px;transition:border-color .2s,background .2s}
+.door:hover{border-color:var(--hair-s)}
+.door[aria-selected="true"]{background:linear-gradient(180deg,rgba(212,175,55,.17),rgba(212,175,55,.05));border-color:var(--gold-edge)}
+.door .who{font-family:var(--display);font-size:20px;font-weight:600}
+.door[aria-selected="true"] .who{color:var(--gold-pale)}
+.door .what{color:var(--muted);font-size:13px;line-height:1.35}
+
+/* stage */
+.stage{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:34px;margin-top:32px;align-items:start}
+@media (max-width:900px){.stage{grid-template-columns:1fr;gap:24px}}
+.phone{width:100%;max-width:340px;margin:0 auto;aspect-ratio:9/19.5;border-radius:36px;border:1px solid var(--hair);background:var(--raise);padding:8px;box-shadow:0 30px 70px -30px #000,0 0 0 1px rgba(0,0,0,.6);position:sticky;top:20px}
+.screen{position:relative;width:100%;height:100%;border-radius:29px;overflow:hidden;background:var(--ink);display:flex;flex-direction:column}
+.screen::before{content:"";position:absolute;inset:0;z-index:0;background:
+  linear-gradient(180deg,rgba(7,6,5,.6),rgba(7,6,5,.52) 30%,rgba(7,6,5,.74) 70%,rgba(7,6,5,.95)),
+  url("room.webp") center/cover no-repeat;}
+.view{position:relative;z-index:1;flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 12px 10px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}
+.view::-webkit-scrollbar{width:5px}.view::-webkit-scrollbar-thumb{background:rgba(247,230,190,.18);border-radius:3px}
+
+/* app chrome */
+.appbar{position:relative;z-index:1;display:flex;align-items:center;gap:8px;padding:12px 12px 2px}
+.avatar,.icobtn{width:34px;height:34px;border-radius:50%;background:var(--glass);border:1px solid var(--hair);display:grid;place-items:center;flex:0 0 auto;font-size:14px}
+.avatar{color:var(--gold);font-weight:700;font-family:var(--display)}
+.icobtn{color:var(--gold);font-size:15px}
+.titles{flex:1;min-width:0}
+.titles b{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.titles span{display:block;font-size:11px;color:var(--muted)}
+.tabbar{position:relative;z-index:1;display:flex;gap:2px;padding:6px 6px calc(8px + env(safe-area-inset-bottom,0px));background:rgba(7,6,5,.93);border-top:1px solid var(--hair)}
+.tabbar button{flex:1;display:grid;gap:2px;justify-items:center;padding:4px 2px;font-size:9.5px;color:var(--muted);border-radius:12px}
+.tabbar .ico{width:34px;height:22px;display:grid;place-items:center;border-radius:11px;font-size:14px;line-height:1}
+.tabbar button[aria-current="true"]{color:var(--gold);font-weight:700}
+.tabbar button[aria-current="true"] .ico{background:linear-gradient(90deg,var(--gold-pale),var(--gold-br));border:1px solid var(--gold-edge);color:#17130A}
+.tabbar .badge{position:absolute;transform:translate(14px,-8px);background:var(--bad);color:#fff;font-size:8px;font-weight:700;min-width:14px;height:14px;border-radius:7px;display:grid;place-items:center;padding:0 3px}
+
+/* app pieces */
+.card{background:var(--glass);border:1px solid var(--hair);border-radius:16px;padding:12px}
+.gold-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;border-radius:20px;background:linear-gradient(90deg,var(--gold-pale),var(--gold));border:1px solid var(--gold-edge);color:#17130A;font-weight:700;font-size:14px}
+.gold-btn:disabled{opacity:.45;cursor:not-allowed}
+.ghost-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:11px;border-radius:20px;background:var(--glass);border:1px solid var(--hair);font-size:12.5px;font-weight:600}
+.serif{font-family:var(--display);font-weight:600}
+.eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.section-h{display:flex;align-items:baseline;gap:8px;margin-top:2px}
+.section-h b{font-size:14.5px;font-weight:700}
+.section-h span{margin-left:auto;font-size:11px;color:var(--gold)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.dish{background:var(--glass);border:1px solid var(--hair);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;text-align:left}
+.dish img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;max-width:100%}
+.dish .b{padding:8px 9px 10px;display:flex;flex-direction:column;gap:3px;flex:1}
+.dish .n{font-size:12.5px;font-weight:700;line-height:1.2}
+.dish .d{font-size:10px;color:var(--muted);line-height:1.3}
+.dish .row{display:flex;align-items:flex-end;gap:6px;margin-top:auto;padding-top:5px}
+.dish .p{font-size:13px;font-weight:700;color:var(--gold)}
+.dish .meta{font-size:9px;color:var(--dim)}
+.plus{margin-left:auto;width:28px;height:28px;border-radius:50%;background:linear-gradient(90deg,var(--gold-pale),var(--gold-br));border:1px solid var(--gold-edge);color:#17130A;font-weight:700;font-size:15px;display:grid;place-items:center;flex:0 0 auto}
+.cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:0 0 auto;width:58px;border-radius:15px;background:var(--glass);border:1px solid var(--hair);padding:7px 3px;display:grid;gap:3px;justify-items:center;font-size:9px;color:var(--muted)}
+.cat .ci{font-size:16px;line-height:1}
+.cat[aria-current="true"]{background:linear-gradient(180deg,var(--gold-pale),var(--gold-br));border-color:var(--gold-edge);color:#17130A;font-weight:700}
+.search{display:flex;align-items:center;gap:8px;background:var(--glass);border:1px solid var(--hair);border-radius:20px;padding:9px 13px}
+.search input{flex:1;min-width:0;background:none;border:0;color:var(--text);font:inherit;font-size:12.5px;outline:none}
+.search input::placeholder{color:var(--dim)}
+.line{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.line .r{margin-left:auto;font-variant-numeric:tabular-nums}
+.hr{height:1px;background:var(--hair);margin:3px 0}
+.pill{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:9px;border:1px solid}
+.empty{margin:auto;text-align:center;display:grid;gap:6px;padding:28px 10px;color:var(--muted);font-size:12.5px}
+.empty .ei{font-size:28px}
+.empty b{color:var(--text);font-size:15px;font-weight:700}
+.bubble{max-width:86%;padding:9px 11px;border-radius:14px;font-size:12.5px;line-height:1.4}
+.bot{background:var(--glass);border:1px solid var(--hair);align-self:flex-start}
+.me{background:linear-gradient(90deg,var(--gold-pale),var(--gold));color:#17130A;align-self:flex-end;font-weight:600}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:11px;padding:6px 10px;border-radius:14px;border:1px solid var(--hair-s);color:var(--gold);background:var(--glass-soft)}
+.kpi{display:grid;gap:3px}
+.kpi .v{font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi .l{font-size:10.5px;color:var(--muted)}
+.bars{display:flex;align-items:flex-end;gap:5px;height:72px;margin-top:8px}
+.bars div{flex:1;background:linear-gradient(180deg,var(--gold-br),var(--gold-dim));border-radius:3px 3px 0 0;min-height:3px}
+.bars span{flex:1;text-align:center;font-size:9px;color:var(--dim)}
+.toast{position:absolute;left:12px;right:12px;bottom:12px;z-index:3;background:rgba(18,15,10,.96);border:1px solid var(--gold-edge);border-radius:14px;padding:10px 12px;font-size:12px;text-align:center}
+
+/* side notes */
+.notes{display:grid;gap:14px}
+.note{background:var(--glass);border:1px solid var(--hair);border-radius:18px;padding:16px 18px;display:grid;gap:6px}
+.note h3{margin:0;font-family:var(--display);font-size:19px;font-weight:600}
+.note p{margin:0;color:var(--muted);font-size:13.5px;max-width:62ch}
+.note ol{margin:2px 0 0;padding-left:18px;color:var(--muted);font-size:13.5px;display:grid;gap:5px}
+.note b{color:var(--text)}
+.foot{margin-top:46px;border-top:1px solid var(--hair);padding-top:20px;display:grid;gap:12px}
+.foot p{margin:0;color:var(--muted);font-size:13px;max-width:70ch}
+.sig{color:var(--dim);font-size:11px;letter-spacing:.26em;text-transform:uppercase}
+.sig i{font-style:normal;color:var(--gold);font-weight:700}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <img class="mark" src="mark.png" alt="">
+    <span class="rule">Три стороны одного зала</span>
+    <h1>Servio AI</h1>
+    <p class="standfirst">Рабочее демо. Закажите как гость — официант увидит заказ, владелец увидит выручку. Одни и те же данные, три роли.</p>
+  </header>
+
+  <div class="doors" role="tablist" aria-label="Роль">
+    <button class="door" role="tab" data-role="guest" aria-selected="true"><span class="who">Гость</span><span class="what">Планшет на столе: меню, корзина, ассистент, вызов официанта</span></button>
+    <button class="door" role="tab" data-role="waiter" aria-selected="false"><span class="who">Официант</span><span class="what">Заказы с залов, вызовы, статусы столов</span></button>
+    <button class="door" role="tab" data-role="owner" aria-selected="false"><span class="who">Владелец</span><span class="what">Выручка, средний чек, меню, кухня</span></button>
+  </div>
+
+  <section class="stage">
+    <div class="phone"><div class="screen" id="screen"></div></div>
+    <div class="notes" id="notes"></div>
+  </section>
+
+  <footer class="foot">
+    <p>Это демо для браузера, а не само приложение: Servio AI — Android-приложение на Kotlin, и здесь воспроизведены его экраны и логика заказа, чтобы можно было попробовать без установки. Меню, цены, время готовки и калории — из демо-ресторана «Golden Bite».</p>
+    <p class="sig">Servio <i>AI</i> · Smart service. Happy guests.</p>
+  </footer>
+</div>
+
+<script>
+const MENU=[
+ {id:"classic",n:"Classic Burger",c:"Burgers",p:6.90,img:"classic_burger",d:"100% Irish beef, lettuce, tomato, pickles, house sauce",t:7,k:540,pop:1},
+ {id:"cheese",n:"Cheeseburger",c:"Burgers",p:5.40,img:"cheeseburger",d:"Beef patty, melted cheddar, onion, ketchup, mustard",t:6,k:490,pop:1},
+ {id:"double",n:"Bacon Double",c:"Burgers",p:8.90,img:"double_burger",d:"Two patties, smoked bacon, double cheese, crispy onions",t:9,k:880,pop:1},
+ {id:"chick",n:"Crispy Chicken Burger",c:"Burgers",p:7.20,img:"chicken_burger",d:"Buttermilk chicken fillet, slaw, garlic mayo",t:8,k:620,pop:1},
+ {id:"wrap",n:"Chicken Wrap",c:"Burgers",p:6.50,img:"wrap",d:"Grilled chicken, salad, tomato salsa, soft tortilla",t:6,k:470},
+ {id:"fries",n:"Fries",c:"Sides",p:2.90,img:"fries",d:"Skin-on, double-cooked, sea salt",t:4,k:330,pop:1,v:1},
+ {id:"rings",n:"Onion Rings",c:"Sides",p:3.90,img:"onion_rings",d:"Beer-battered, crisp, eight to a box",t:5,k:390,v:1},
+ {id:"nugg",n:"Chicken Nuggets",c:"Sides",p:4.90,img:"nuggets",d:"Six pieces, dip of your choice",t:6,k:410,pop:1},
+ {id:"salad",n:"Caesar Salad",c:"Sides",p:5.90,img:"salad",d:"Romaine, parmesan, croutons, caesar dressing",t:4,k:280},
+ {id:"sundae",n:"Sundae",c:"Desserts",p:3.20,img:"ice_cream",d:"Soft serve, sauce and sprinkles",t:3,k:290,pop:1,v:1},
+ {id:"pie",n:"Apple Pie",c:"Desserts",p:2.50,img:"apple_pie",d:"Warm, crisp pastry, cinnamon apples",t:3,k:250,pop:1,v:1},
+ {id:"tea",n:"Iced Tea",c:"Drinks",p:2.80,img:"lemonade",d:"Brewed cold, lemon, no added sugar",t:2,k:45,pop:1,v:1},
+ {id:"coffee",n:"Coffee",c:"Drinks",p:2.20,img:"coffee",d:"Dublin-roasted, flat white or americano",t:2,k:90,pop:1,v:1}
+];
+const CATS=[{n:"All",i:"▦"},{n:"Burgers",i:"🍔"},{n:"Sides",i:"🍟"},{n:"Desserts",i:"🍦"},{n:"Drinks",i:"🍸"}];
+const eur=n=>"€"+n.toFixed(2);
+const dish=id=>MENU.find(m=>m.id===id);
+
+// Orders already on the floor when the demo opens, so the waiter and owner screens are not empty.
+const SEED=[
+ {id:"0432",table:"7",items:[["double",2],["fries",2],["tea",2]],status:"NEW",min:1},
+ {id:"D66D",table:"3",items:[["cheese",1],["nugg",1],["coffee",1]],status:"NEW",min:3},
+ {id:"91C4",table:"12",items:[["classic",3],["rings",1],["tea",3]],status:"COOKING",min:6},
+ {id:"5A0B",table:"5",items:[["chick",1],["fries",1]],status:"COOKING",min:10},
+ {id:"7E21",table:"16",items:[["wrap",2],["salad",1]],status:"ACCEPTED",min:4},
+ {id:"B339",table:"9",items:[["sundae",2],["pie",1]],status:"READY",min:2},
+ {id:"C480",table:"4",items:[["cheese",2],["fries",2],["coffee",2]],status:"READY",min:5}
+];
+const WEEK_BEFORE=4409.10, COVERS_BEFORE=302;
+
+const S={role:"guest",tab:"menu",cat:"All",q:"",cart:[],orders:SEED.map(o=>({...o})),requests:[],chat:[],toast:null,myOrders:[]};
+const total=()=>S.cart.reduce((s,l)=>s+dish(l.id).p*l.q,0);
+const count=()=>S.cart.reduce((s,l)=>s+l.q,0);
+const orderTotal=o=>o.items.reduce((s,[id,q])=>s+dish(id).p*q,0);
+
+function toast(msg){S.toast=msg;render();clearTimeout(toast._t);toast._t=setTimeout(()=>{S.toast=null;render()},1900)}
+function add(id){const l=S.cart.find(l=>l.id===id);l?l.q++:S.cart.push({id,q:1});toast(dish(id).n+" — в корзине")}
+function place(){
+  if(!S.cart.length)return;
+  const o={id:Math.random().toString(16).slice(2,6).toUpperCase(),table:"1",items:S.cart.map(l=>[l.id,l.q]),status:"NEW",min:0,mine:true};
+  S.orders.unshift(o);S.myOrders.unshift(o.id);S.cart=[];S.tab="orders";
+  toast("Заказ #"+o.id+" отправлен на кухню");
+}
+function callWaiter(){
+  if(S.requests.some(r=>r.table==="1"))return toast("Официанта уже позвали");
+  S.requests.unshift({table:"1",min:0,type:"Вызов официанта"});toast("Официант идёт к столу 1");
+}
+function advance(o){
+  const next={NEW:"ACCEPTED",ACCEPTED:"COOKING",COOKING:"READY",READY:"SERVED"}[o.status];
+  if(next){o.status=next;o.min=0;render()}
+}
+
+/* ── guest ─────────────────────────────────────────────────── */
+function guestMenu(){
+  const q=S.q.trim().toLowerCase();
+  let list=MENU.filter(m=>(S.cat==="All"||m.c===S.cat)&&(!q||m.n.toLowerCase().includes(q)||m.d.toLowerCase().includes(q)));
+  const cats=`<div class="cats">${CATS.map(c=>`<button class="cat" data-cat="${c.n}" aria-current="${c.n===S.cat}"><span class="ci">${c.i}</span>${c.n}</button>`).join("")}</div>`;
+  const search=`<div class="search"><span style="color:var(--dim)">⌕</span><input id="q" placeholder="Поиск по меню…" value="${S.q.replace(/"/g,"&quot;")}"></div>`;
+  if(!list.length)return search+cats+`<div class="empty"><span class="ei">🍽️</span><b>Ничего не нашлось</b>По запросу «${S.q}» в меню пусто.</div>`;
+  const card=m=>`<button class="dish" data-add="${m.id}"><img src="dish/${m.img}.jpg" alt=""><div class="b"><span class="n">${m.n}</span><span class="d">${m.d}</span><span class="row"><span><span class="p">${eur(m.p)}</span><br><span class="meta">${m.t} мин · ${m.k} ккал</span></span><span class="plus">+</span></span></div></button>`;
+  let body="";
+  if(S.cat==="All"&&!q){
+    const pop=list.filter(m=>m.pop).slice(0,4);
+    body+=`<div class="section-h"><b>Популярно сейчас</b></div><div class="grid2">${pop.map(card).join("")}</div>`;
+    for(const c of CATS.slice(1)){
+      const g=list.filter(m=>m.c===c.n);
+      if(g.length)body+=`<div class="section-h"><b>${c.n}</b><span data-cat="${c.n}">Все →</span></div><div class="grid2">${g.map(card).join("")}</div>`;
+    }
+  }else body=`<div class="grid2">${list.map(card).join("")}</div>`;
+  return search+cats+body;
+}
+function guestCart(){
+  if(!S.cart.length)return `<div class="empty"><span class="ei">🛒</span><b>Корзина пуста</b>Добавьте блюда из меню — они появятся здесь.</div>`;
+  const lines=S.cart.map(l=>{const m=dish(l.id);return `<div class="line"><img src="dish/${m.img}.jpg" alt="" style="width:40px;height:40px;border-radius:9px;object-fit:cover"><span><b style="font-size:12.5px">${m.n}</b><br><span style="color:var(--muted);font-size:10.5px">${eur(m.p)} × ${l.q}</span></span><span class="r" style="font-weight:700;color:var(--gold)">${eur(m.p*l.q)}</span><button data-dec="${l.id}" style="color:var(--dim);font-size:16px;padding:0 4px">−</button></div>`}).join('<div class="hr"></div>');
+  return `<div class="card">${lines}</div>
+    <div class="card"><div class="line"><span style="color:var(--muted)">Позиций</span><span class="r">${count()}</span></div><div class="hr"></div><div class="line"><b>К оплате</b><span class="r serif" style="font-size:19px;color:var(--gold)">${eur(total())}</span></div></div>
+    <button class="gold-btn" data-place>Отправить на кухню</button>
+    <div class="eyebrow" style="text-align:center">Оплата у стола · Golden Bite</div>`;
+}
+function guestOrders(){
+  const mine=S.orders.filter(o=>o.mine);
+  if(!mine.length)return `<div class="empty"><span class="ei">🧾</span><b>Заказов пока нет</b>Отправьте первый заказ из корзины.</div>`;
+  const label={NEW:["Принят кухней","var(--info)"],ACCEPTED:["Принят кухней","var(--info)"],COOKING:["Готовится","var(--warn)"],READY:["Готово — несут","var(--ok)"],SERVED:["Подано","var(--muted)"]};
+  return mine.map(o=>{const[l,c]=label[o.status];return `<div class="card"><div class="line"><b>#${o.id}</b><span class="pill" style="color:${c};border-color:${c}">${l}</span></div><div class="hr"></div>${o.items.map(([id,q])=>`<div class="line"><span style="color:var(--muted)">${q}× ${dish(id).n}</span><span class="r">${eur(dish(id).p*q)}</span></div>`).join("")}<div class="hr"></div><div class="line"><b>Итого</b><span class="r" style="color:var(--gold);font-weight:700">${eur(orderTotal(o))}</span></div></div>`}).join("");
+}
+function guestAi(){
+  const chips=["Что посоветуешь?","Вегетарианское","Что подешевле","Самое быстрое"];
+  const msgs=S.chat.length?S.chat:[{who:"bot",t:"Добро пожаловать. Я ассистент этого столика — спрашивайте что угодно о меню: что популярно, что подойдёт по диете, что входит в блюдо, сколько готовится. 🍽️"}];
+  return `<div style="display:flex;flex-direction:column;gap:8px;flex:1">${msgs.map(m=>`<div class="bubble ${m.who==="me"?"me":"bot"}">${m.t}</div>`).join("")}</div>
+    <div class="chips">${chips.map(c=>`<button class="chip" data-ask="${c}">${c}</button>`).join("")}</div>`;
+}
+function ask(q){
+  S.chat.push({who:"me",t:q});
+  const list=(a,note)=>note+"<br>"+a.map(m=>`• <b>${m.n}</b> — ${eur(m.p)}, ${m.t} мин`).join("<br>");
+  let a;
+  if(/вегет|veg/i.test(q))a=list(MENU.filter(m=>m.v),"Вегетарианское в нашем меню:");
+  else if(/дешев|цена|недорог/i.test(q))a=list([...MENU].sort((x,y)=>x.p-y.p).slice(0,3),"Самое доступное:");
+  else if(/быстр|скоро|врем/i.test(q))a=list([...MENU].sort((x,y)=>x.t-y.t).slice(0,3),"Быстрее всего готовится:");
+  else if(/посовет|популяр|лучш/i.test(q))a=list(MENU.filter(m=>m.pop).slice(0,3),"Чаще всего берут:");
+  else{
+    const hit=MENU.find(m=>q.toLowerCase().includes(m.n.toLowerCase().split(" ")[0]));
+    a=hit?`<b>${hit.n}</b> — ${hit.d}. ${eur(hit.p)}, ${hit.t} мин, ${hit.k} ккал.`
+        :"Я отвечаю только по этому меню. Спросите про популярное, вегетарианское, цену, время готовки или состав конкретного блюда.";
+  }
+  S.chat.push({who:"bot",t:a});render();
+}
+function guestMore(){
+  return `<div class="card"><div class="eyebrow">Язык</div><div class="line" style="margin-top:6px">🇬🇧 <b>English</b><span class="r" style="color:var(--gold);font-size:11px">Сменить</span></div></div>
+   <div class="card"><div class="eyebrow">Стол</div><div class="line" style="margin-top:6px">🪑 <b>Table T1</b><span class="r" style="color:var(--muted);font-size:11px">Golden Bite</span></div></div>
+   <button class="ghost-btn" data-call>🔔 Позвать официанта</button>
+   <div class="card"><div class="eyebrow">Ресторан</div><div style="margin-top:6px"><b style="font-size:13px">Golden Bite</b><br><span style="color:var(--muted);font-size:11.5px">27 Dame Street, Dublin 2<br>Burgers, fries and shakes — fast, not cheap-tasting</span></div></div>`;
+}
+function guest(){
+  const tabs=[["menu","🍴","Меню"],["ai","✨","AI"],["cart","🛒","Корзина"],["orders","🧾","Заказы"],["more","⋯","Ещё"]];
+  const view={menu:guestMenu,cart:guestCart,orders:guestOrders,ai:guestAi,more:guestMore}[S.tab]();
+  return `<div class="appbar"><span class="avatar">G</span><span class="titles"><b>Golden Bite</b><span>Table T1</span></span><button class="icobtn" data-call>🔔</button><span class="icobtn">⌕</span></div>
+  <div class="view">${view}</div>
+  <div class="tabbar">${tabs.map(([k,i,l])=>`<button data-tab="${k}" aria-current="${S.tab===k}"><span class="ico">${i}${k==="cart"&&count()?`<span class="badge">${count()}</span>`:""}</span>${l}</button>`).join("")}</div>`;
+}
+
+/* ── waiter ────────────────────────────────────────────────── */
+function waiter(){
+  const live=S.orders.filter(o=>o.status!=="SERVED");
+  const label={NEW:["Новый","var(--info)"],ACCEPTED:["Принят","var(--info)"],COOKING:["Готовится","var(--warn)"],READY:["Готово","var(--ok)"],SERVED:["Подано","var(--muted)"]};
+  const act={NEW:"Принять",ACCEPTED:"В работу",COOKING:"Готово",READY:"Подал"};
+  const body=S.tab==="req"
+   ? (S.requests.length?S.requests.map(r=>`<div class="card"><div class="line">🔔 <b>Стол ${r.table}</b><span class="pill" style="color:var(--warn);border-color:var(--warn)">${r.type}</span></div><button class="ghost-btn" style="margin-top:8px" data-done="${r.table}">Подошёл</button></div>`).join("")
+     :`<div class="empty"><span class="ei">🔔</span><b>Вызовов нет</b>Загляните в «Ещё» гостя и нажмите «Позвать официанта».</div>`)
+   : `<div class="card"><div class="line"><span class="kpi"><span class="v">${live.length}</span><span class="l">в работе</span></span><span class="kpi" style="margin-left:auto;text-align:right"><span class="v" style="color:var(--ok)">${live.filter(o=>o.status==="READY").length}</span><span class="l">готово</span></span><span class="kpi" style="margin-left:14px;text-align:right"><span class="v" style="color:var(--warn)">${S.requests.length}</span><span class="l">вызовов</span></span></div></div>`
+     + live.map(o=>{const[l,c]=label[o.status];return `<div class="card"><div class="line"><b>#${o.id}</b><span class="pill" style="color:${c};border-color:${c}">${l}</span><span class="r" style="color:var(--muted);font-size:11px">Стол ${o.table}</span></div><div class="hr"></div>${o.items.map(([id,q])=>`<div class="line"><span style="color:var(--muted)">${q}× ${dish(id).n}</span></div>`).join("")}<div class="line" style="margin-top:7px"><span style="color:var(--gold);font-weight:700">${eur(orderTotal(o))}</span><button class="ghost-btn" style="width:auto;padding:7px 14px;margin-left:auto" data-adv="${o.id}">${act[o.status]}</button></div></div>`}).join("");
+  const tabs=[["floor","▦","Зал"],["req","🔔","Вызовы"]];
+  return `<div class="appbar"><span class="avatar">W</span><span class="titles"><b>Waiter Dashboard</b><span>Golden Bite · Elena</span></span><span class="icobtn">⌕</span></div>
+  <div class="view">${body}</div>
+  <div class="tabbar">${tabs.map(([k,i,l])=>`<button data-tab="${k}" aria-current="${S.tab===k}"><span class="ico">${i}${k==="req"&&S.requests.length?`<span class="badge">${S.requests.length}</span>`:""}</span>${l}</button>`).join("")}</div>`;
+}
+
+/* ── owner ─────────────────────────────────────────────────── */
+function owner(){
+  const mine=S.orders.filter(o=>o.mine);
+  const rev=WEEK_BEFORE+mine.reduce((s,o)=>s+orderTotal(o),0);
+  const covers=COVERS_BEFORE+mine.length;
+  const avg=rev/covers;
+  const days=[612,498,521,567,589,1012,610];
+  const extra=mine.reduce((s,o)=>s+orderTotal(o),0);
+  days[5]+=extra;
+  const max=Math.max(...days);
+  const sold={};
+  S.orders.forEach(o=>o.items.forEach(([id,q])=>sold[id]=(sold[id]||0)+q));
+  const top=Object.entries(sold).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const body=S.tab==="menu"
+   ? MENU.map(m=>`<div class="card"><div class="line"><img src="dish/${m.img}.jpg" alt="" style="width:38px;height:38px;border-radius:9px;object-fit:cover"><span><b style="font-size:12.5px">${m.n}</b><br><span style="color:var(--muted);font-size:10.5px">${m.c} · ${m.t} мин · ${m.k} ккал</span></span><span class="r" style="color:var(--gold);font-weight:700">${eur(m.p)}</span></div></div>`).join("")
+   : `<div class="grid2">
+        <div class="card kpi"><span class="eyebrow">Выручка</span><span class="v">${eur(rev)}</span><span class="l">за неделю</span></div>
+        <div class="card kpi"><span class="eyebrow">Заказы</span><span class="v">${covers}</span><span class="l">чеков</span></div>
+      </div>
+      <div class="card kpi"><span class="eyebrow">Средний чек</span><span class="v">${eur(avg)}</span><span class="l">по неделе</span></div>
+      <div class="card"><div class="line"><b>Выручка по дням</b></div>
+        <div class="bars">${days.map(d=>`<div style="height:${Math.round(d/max*100)}%"></div>`).join("")}</div>
+        <div class="bars" style="height:auto;margin-top:3px">${["Вс","Пн","Вт","Ср","Чт","Пт","Сб"].map(d=>`<span>${d}</span>`).join("")}</div>
+      </div>
+      <div class="card"><div class="line"><b>Чаще всего берут</b></div><div class="hr"></div>
+        ${top.map(([id,q])=>`<div class="line"><img src="dish/${dish(id).img}.jpg" alt="" style="width:30px;height:30px;border-radius:7px;object-fit:cover"><span style="font-size:12px">${dish(id).n}<br><span style="color:var(--muted);font-size:10px">${q} порций</span></span><span class="r" style="color:var(--gold);font-weight:700">${eur(dish(id).p*q)}</span></div>`).join('<div class="hr"></div>')}
+      </div>`;
+  const tabs=[["dash","▦","Сводка"],["menu","🍴","Меню"]];
+  return `<div class="appbar"><span class="avatar">M</span><span class="titles"><b>Dashboard</b><span>Golden Bite · Marco</span></span><span class="icobtn">🔔</span></div>
+  <div class="view">${body}</div>
+  <div class="tabbar">${tabs.map(([k,i,l])=>`<button data-tab="${k}" aria-current="${S.tab===k}"><span class="ico">${i}</span>${l}</button>`).join("")}</div>`;
+}
+
+const NOTES={
+ guest:[["Что попробовать","Это планшет, который лежит на столе перед гостем.",["Откройте <b>Меню</b> и добавьте пару блюд — счётчик на корзине вырастет.","В <b>Корзине</b> нажмите «Отправить на кухню».","Переключитесь на <b>Официанта</b> — заказ уже там.","В <b>Ещё</b> нажмите «Позвать официанта» и снова загляните к официанту."]],
+  ["Ассистент","Отвечает только по этому меню: популярное, вегетарианское, цена, время готовки, состав. Блюд, которых нет в меню, он не предлагает — это правило самого приложения, а не демо."]],
+ waiter:[["Что попробовать","Телефон официанта: весь зал в одном списке.",["Нажмите кнопку на заказе — он поедет по статусам: принят → в работе → готово → подал.","Вкладка <b>Вызовы</b> показывает столы, которые позвали официанта.","Заказ, отправленный гостем, появляется сверху."]],
+  ["Откуда семь заказов","Это демо-смена: шесть столов уже сделали заказ до вас. Ваш добавляется к ним."]],
+ owner:[["Что попробовать","Сводка по ресторану за неделю.",["Сделайте заказ как <b>Гость</b> и вернитесь сюда — выручка, число чеков и средний чек пересчитаются.","Столбик пятницы подрастёт на сумму вашего заказа.","Вкладка <b>Меню</b> — те же 13 блюд, что видит гость."]],
+  ["Цифры","€4 409.10 и 302 чека — демо-неделя «Golden Bite». В приложении это настоящие заказы ресторана."]]
+};
+
+const screen=document.getElementById("screen"),notes=document.getElementById("notes");
+function render(){
+  screen.innerHTML=({guest,waiter,owner}[S.role])()+(S.toast?`<div class="toast">${S.toast}</div>`:"");
+  notes.innerHTML=NOTES[S.role].map(([h,p,steps])=>`<div class="note"><h3>${h}</h3><p>${p}</p>${steps?`<ol>${steps.map(s=>`<li>${s}</li>`).join("")}</ol>`:""}</div>`).join("");
+  const q=document.getElementById("q");
+  if(q&&S.focusQ){q.focus();q.selectionStart=q.value.length}
+  S.focusQ=false;
+}
+document.querySelectorAll(".door").forEach(d=>d.addEventListener("click",()=>{
+  S.role=d.dataset.role;S.tab={guest:"menu",waiter:"floor",owner:"dash"}[S.role];
+  document.querySelectorAll(".door").forEach(x=>x.setAttribute("aria-selected",String(x===d)));
+  try{location.hash=S.role}catch(e){}
+  render();
+}));
+screen.addEventListener("click",e=>{
+  const t=e.target.closest("[data-tab],[data-add],[data-cat],[data-place],[data-dec],[data-ask],[data-adv],[data-call],[data-done]");
+  if(!t)return;
+  const d=t.dataset;
+  if(d.tab!==undefined)S.tab=d.tab;
+  else if(d.add)return add(d.add);
+  else if(d.cat!==undefined){S.cat=d.cat;S.q=""}
+  else if(d.place!==undefined)return place(),render();
+  else if(d.dec){const l=S.cart.find(l=>l.id===d.dec);if(l&&--l.q<=0)S.cart=S.cart.filter(x=>x!==l)}
+  else if(d.ask)return ask(d.ask);
+  else if(d.adv)return advance(S.orders.find(o=>o.id===d.adv));
+  else if(d.call!==undefined)return callWaiter(),render();
+  else if(d.done){S.requests=S.requests.filter(r=>r.table!==d.done)}
+  render();
+});
+screen.addEventListener("input",e=>{if(e.target.id==="q"){S.q=e.target.value;S.focusQ=true;render()}});
+const h=(location.hash||"").replace("#","");
+if(["guest","waiter","owner"].includes(h)){
+  S.role=h;S.tab={guest:"menu",waiter:"floor",owner:"dash"}[h];
+  document.querySelectorAll(".door").forEach(x=>x.setAttribute("aria-selected",String(x.dataset.role===h)));
+}
+render();
+</script>
+
+</body>
+</html>
