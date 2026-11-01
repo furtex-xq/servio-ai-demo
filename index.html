@@ -168,6 +168,23 @@ section{position:relative}
 .cta h2{font-size:clamp(36px,5vw,60px)}
 .cta .lead{margin:20px auto 36px}
 .cta .hero-cta{justify-content:center}
+.contact{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:44px;border:1px solid var(--hair-s);border-radius:28px;background:linear-gradient(135deg,rgba(212,175,55,.10),rgba(22,18,12,.7) 55%)}
+.mail{display:block;font-family:var(--display);font-size:clamp(22px,2.6vw,32px);color:var(--gold-pale);text-decoration:none;margin-bottom:22px;word-break:break-all}
+.mail:hover{color:var(--gold-br)}
+@media (max-width:900px){.contact{grid-template-columns:1fr;padding:28px}}
+.stagger>.reveal:nth-child(2){transition-delay:.09s}.stagger>.reveal:nth-child(3){transition-delay:.18s}.stagger>.reveal:nth-child(4){transition-delay:.27s}
+.feat.reveal>div{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.feat.reveal.in>div{opacity:1;transform:none}
+.feat.reveal.in>div:nth-child(2){transition-delay:.08s}.feat.reveal.in>div:nth-child(3){transition-delay:.16s}.feat.reveal.in>div:nth-child(4){transition-delay:.24s}.feat.reveal.in>div:nth-child(5){transition-delay:.32s}.feat.reveal.in>div:nth-child(6){transition-delay:.4s}
+.card{transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease}
+.card:hover,.role:hover{transform:translateY(-4px);border-color:rgba(212,175,55,.4)}
+.role{transition:transform .35s ease,border-color .35s ease}
+.chapter.on .steps li{animation:stepIn .5s cubic-bezier(.2,.8,.2,1) both}
+.chapter.on .steps li:nth-child(2){animation-delay:.08s}.chapter.on .steps li:nth-child(3){animation-delay:.16s}
+@keyframes stepIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+.frame{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.frame.flip{animation:phoneKick .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes phoneKick{0%{transform:none}40%{transform:translateY(-6px) scale(1.012)}100%{transform:none}}
 footer{border-top:1px solid var(--hair);padding:36px 0 50px;color:var(--dim);font-size:14px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-between}
 
@@ -187,6 +204,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-bet
       <a href="#film" data-t="nav_film">Film</a>
       <a href="#pricing" data-t="nav_price">Pricing</a>
       <a href="#status" data-t="nav_status">Stage</a>
+      <a href="#contact" data-t="nav_contact">Contact</a>
     </div>
     <div class="lang" role="group" aria-label="Language">
       <button data-lang="en" aria-pressed="true">EN</button><button data-lang="ru" aria-pressed="false">RU</button>
@@ -206,10 +224,10 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-bet
         <a class="btn btn-ghost" href="demo/" data-t="hero_b2">Try the live demo</a>
       </div>
       <div class="facts">
-        <span><b>4</b>&nbsp;<span data-t="f1">roles, one system</span></span>
-        <span><b>9</b>&nbsp;<span data-t="f2">languages</span></span>
+        <span><b class="cnt">4</b>&nbsp;<span data-t="f1">roles, one system</span></span>
+        <span><b class="cnt">9</b>&nbsp;<span data-t="f2">languages</span></span>
         <span><b data-t="f3a">Offline</b>&nbsp;<span data-t="f3">keeps working</span></span>
-        <span><b>14</b>&nbsp;<span data-t="f4">days free trial</span></span>
+        <span><b class="cnt">14</b>&nbsp;<span data-t="f4">days free trial</span></span>
       </div>
     </div>
     <img class="hero-mark reveal" src="logo.png" alt="Servio AI">
@@ -224,7 +242,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-bet
       <h2 data-t="p_h">A busy service is <em>four separate jobs</em> that don't talk to each other.</h2>
       <p class="lead" data-t="p_p">Taking orders, cooking them, serving them and counting the money usually happen on paper, in someone's memory and in a till that knows nothing about the kitchen.</p>
     </div>
-    <div class="grid3">
+    <div class="grid3 stagger">
       <div class="card problem reveal" data-n="01">
         <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></div>
         <h3 data-t="p1h">Guests wait</h3><p data-t="p1p">To get a menu, to order, to ask what's in a dish, to get the bill. Every wait is a table that turns slower.</p>
@@ -248,7 +266,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-bet
       <h2 data-t="r_h">One app, <em>four screens,</em> the same live data.</h2>
       <p class="lead" data-t="r_p">Every device in the restaurant runs Servio AI. Each one opens in the role it was given — and they all see the same orders the moment they change.</p>
     </div>
-    <div class="roles">
+    <div class="roles stagger">
       <div class="role reveal"><div class="tag" data-t="r1t">On the table</div><h3 data-t="r1h">Guest tablet</h3><p data-t="r1p">Menu with photos and allergens, an AI waiter, cart, order status, a button to call the waiter.</p></div>
       <div class="role reveal"><div class="tag" data-t="r2t">In the kitchen</div><h3 data-t="r2h">Kitchen display</h3><p data-t="r2p">New orders by station, timers that turn red when something is late, one tap to mark it ready.</p></div>
       <div class="role reveal"><div class="tag" data-t="r3t">In the waiter's pocket</div><h3 data-t="r3h">Waiter phone</h3><p data-t="r3p">Tables, orders ready to serve, and every call from a guest — with the table number.</p></div>
@@ -314,18 +332,18 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-bet
       <div class="eyebrow" data-t="pr_eye">Pricing</div>
       <h2 data-t="pr_h">A subscription per restaurant, <em>not per device.</em></h2>
     </div>
-    <div class="grid3">
+    <div class="grid3 stagger">
       <div class="card price reveal">
         <div class="tier" data-t="pr1t">Trial</div><div class="amt">€0 <small data-t="pr1s">for 14 days</small></div>
         <ul><li data-t="pr1a">Up to 5 tablets</li><li data-t="pr1b">The full workflow: tables, kitchen, waiter, owner</li><li data-t="pr1c">AI assistant</li><li data-t="pr1d">No card required</li></ul>
       </div>
       <div class="card price reveal">
-        <div class="tier">Standard</div><div class="amt">€99.99 <small data-t="mo">/ month</small></div>
+        <div class="tier">Standard</div><div class="amt">€<span class="cnt">99.99</span> <small data-t="mo">/ month</small></div>
         <ul><li data-t="pr2a">Up to 20 tablets</li><li data-t="pr2b">All core restaurant features</li><li data-t="pr2c">Advanced analytics</li><li data-t="pr2d">Team management</li></ul>
       </div>
       <div class="card price pop reveal">
         <span class="badge" data-t="pop">Most popular</span>
-        <div class="tier">Pro</div><div class="amt">€249.99 <small data-t="mo">/ month</small></div>
+        <div class="tier">Pro</div><div class="amt">€<span class="cnt">249.99</span> <small data-t="mo">/ month</small></div>
         <ul><li data-t="pr3a">Up to 100 tablets</li><li data-t="pr3b">Everything in Standard</li><li data-t="pr3c">Reports and a larger AI allowance</li><li data-t="pr3d">Ready for several locations</li></ul>
       </div>
     </div>
@@ -339,7 +357,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-bet
       <div class="eyebrow" data-t="s_eye">Where we are</div>
       <h2 data-t="s_h">A working product, <em>ready for its first restaurants.</em></h2>
     </div>
-    <div class="timeline">
+    <div class="timeline stagger">
       <div class="card reveal">
         <h3><span class="dot"></span><span data-t="s1h">Built and working</span></h3>
         <ul>
@@ -375,9 +393,29 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-bet
   </div>
 </section>
 
+<section class="sec" id="contact" style="padding-top:0">
+  <div class="wrap">
+    <div class="contact reveal">
+      <div>
+        <div class="eyebrow" data-t="ct_eye">Contact</div>
+        <h2 style="margin-top:14px" data-t="ct_h">Questions, a pilot, <em>or a meeting?</em></h2>
+        <p class="lead" style="margin-top:14px" data-t="ct_p">Write to us — investors, restaurants that want to try Servio AI, and anyone with feedback. We answer every message.</p>
+      </div>
+      <div class="mailbox">
+        <a class="mail" href="mailto:supportservioai@gmail.com?subject=Servio%20AI">supportservioai@gmail.com</a>
+        <div class="hero-cta">
+          <a class="btn btn-gold" href="mailto:supportservioai@gmail.com?subject=Servio%20AI" data-t="ct_b1">Write to us</a>
+          <button class="btn btn-ghost" id="copyMail" type="button" data-t="ct_b2">Copy address</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <span>Servio <span style="color:var(--gold-br)">AI</span> · <span data-t="foot1">Smart service. Happy guests.</span></span>
+    <a href="mailto:supportservioai@gmail.com" style="color:var(--muted)">supportservioai@gmail.com</a>
     <span data-t="foot2">The demo restaurant “Golden Bite” is fictional. The demo runs entirely in your browser and sends nothing anywhere.</span>
   </div>
 </footer>
@@ -457,7 +495,9 @@ const T = {ru:{
  s1c:"Регистрация с подтверждением почты или через Google, активация устройств по коду",s1d:"Меню с фото, план зала, брони, акции, отзывы, аналитика",s1e:"Весь интерфейс на девяти языках",s1f:"Демо всех экранов в браузере",
  s2h:"Дальше",s2a:"Онлайн-оплата подписки",s2b:"Выпуск в Google Play",s2c:"Пилот с первыми ресторанами",s2d:"Оплата за столом",
  c_h:"Посмотрите <em>сами.</em>",c_p:"Откройте демо и побудьте гостем, поваром, официантом и владельцем бургерной — все экраны приложения в вашем браузере.",
- c_b1:"Открыть живое демо",c_b2:"Смотреть видео",foot1:"Умный сервис. Довольные гости.",
+ c_b1:"Открыть живое демо",nav_contact:"Контакты",ct_eye:"Контакты",ct_h:"Вопросы, пилот <em>или встреча?</em>",
+ ct_p:"Пишите нам — инвесторы, рестораны, которые хотят попробовать Servio AI, и все, у кого есть отзыв. Мы отвечаем на каждое письмо.",
+ ct_b1:"Написать нам",ct_b2:"Скопировать адрес",copied:"Скопировано",c_b2:"Смотреть видео",foot1:"Умный сервис. Довольные гости.",
  foot2:"Демо-ресторан «Golden Bite» вымышленный. Демо работает целиком в вашем браузере и никуда ничего не отправляет."
 }};
 const EN = {};
@@ -493,7 +533,8 @@ function observeChapters(){
   if(io) io.disconnect();
   io = new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting) return;const i=+e.target.dataset.i;if(i===active) return;active=i;
     chapters.querySelectorAll(".chapter").forEach(c=>c.classList.toggle("on",+c.dataset.i===i));
-    document.getElementById("prog").style.height=((i+1)/CH.length*100)+"%";send(CH[i].go)})},{rootMargin:matchMedia("(max-width:980px)").matches?"-70% 0px -24% 0px":"-45% 0px -45% 0px"});
+    document.getElementById("prog").style.height=((i+1)/CH.length*100)+"%";send(CH[i].go);
+    const fr=document.getElementById("frame");fr.classList.remove("flip");void fr.offsetWidth;fr.classList.add("flip")})},{rootMargin:matchMedia("(max-width:980px)").matches?"-70% 0px -24% 0px":"-45% 0px -45% 0px"});
   chapters.querySelectorAll(".chapter").forEach(c=>{io.observe(c);if(+c.dataset.i===active)c.classList.add("on")});
 }
 
@@ -503,6 +544,14 @@ document.querySelectorAll(".reveal").forEach(el=>rv.observe(el));
 const nav=document.getElementById("nav");
 addEventListener("scroll",()=>nav.classList.toggle("solid",scrollY>40),{passive:true});
 
+// figures count up the first time they are seen
+const cio = new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting) return;cio.unobserve(e.target);
+  const el=e.target, raw=el.textContent.trim(), dec=(raw.split(".")[1]||"").length, to=parseFloat(raw);
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches||!isFinite(to)) return;
+  const t0=performance.now(), dur=1200;(function f(t){const k=Math.min(1,(t-t0)/dur),v=to*(1-Math.pow(1-k,3));el.textContent=k<1?v.toFixed(dec):raw;if(k<1)requestAnimationFrame(f)})(t0)}),{threshold:.6});
+document.querySelectorAll(".cnt").forEach(el=>cio.observe(el));
+document.getElementById("copyMail").addEventListener("click",e=>{const b=e.currentTarget;
+  try{navigator.clipboard.writeText("supportservioai@gmail.com").then(()=>{b.textContent=lang==="ru"?T.ru.copied:"Copied";setTimeout(()=>{b.innerHTML=lang==="ru"?T.ru.ct_b2:EN.ct_b2},1600)})}catch(x){}});
 applyLang();
 </script>
 </body>
