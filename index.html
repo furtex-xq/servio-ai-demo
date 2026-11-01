@@ -96,7 +96,7 @@ section{position:relative}
 
 /* scrollytelling */
 .tour{padding:120px 0 40px}
-.tour-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:70px;align-items:start}
+.tour-grid{display:grid;grid-template-columns:minmax(0,1fr) clamp(250px,36vw,400px);gap:clamp(28px,5vw,70px);align-items:start}
 .device{position:sticky;top:calc(50vh - 400px);height:800px;display:grid;justify-items:center}
 @media (max-height:880px){.device{top:84px;height:calc(100vh - 100px)}}
 .frame{position:relative;height:100%;aspect-ratio:390/844;max-width:100%;border-radius:46px;padding:9px;background:linear-gradient(145deg,#2a2419,#0d0b08 40%,#1b160e);box-shadow:0 0 0 1px rgba(247,230,190,.14),0 40px 90px -30px #000,0 0 80px -20px rgba(212,175,55,.25)}
@@ -115,8 +115,8 @@ section{position:relative}
 .steps{list-style:none;padding:0;margin:0;display:grid;gap:10px;max-width:520px}
 .steps li{display:flex;gap:14px;align-items:flex-start;padding:13px 16px;border:1px solid var(--hair);border-radius:16px;background:rgba(255,255,255,.02);font-size:15.5px}
 .steps li b{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;background:rgba(212,175,55,.14);color:var(--gold-br)}
-@media (max-width:980px){
-  /* Small screens: the live phone is the backdrop of the whole tour, and each chapter passes over
+@media (max-width:640px){
+  /* Phones: the live phone is the backdrop of the whole tour, and each chapter passes over
      it like a caption at the bottom — the phone is never squeezed into half the screen. */
   .tour-grid{display:flex;flex-direction:column;position:relative}
   .device{order:-1;position:sticky;top:0;height:100svh;z-index:0;padding:80px 0 0;display:flex;justify-content:center;align-items:flex-start}
@@ -443,8 +443,8 @@ const CH = [
    en:["The AI waiter","A guest asks “what's vegetarian?” or “something spicy?” and gets an answer from this restaurant's menu — in their language.",["Open the assistant tab","Ask about the menu","Add the suggested dish straight to the order"]],
    ru:["ИИ-официант","Гость спрашивает «что есть вегетарианского?» или «что-нибудь острое?» и получает ответ по меню этого ресторана — на своём языке.",["Откройте вкладку ассистента","Спросите о меню","Добавьте предложенное блюдо в заказ"]]},
   {go:{role:"guest",screen:"g_cart",prep:"cart"}, who:"guest",
-   en:["The order goes straight to the kitchen","No waiting to be noticed. The guest checks the cart, adds a note or a promo code, and sends it.",["Check the cart and add a note","Try the code LUNCH20","Send — the kitchen has it in a second"]],
-   ru:["Заказ сразу уходит на кухню","Не нужно ждать, пока заметят. Гость проверяет корзину, добавляет комментарий или промокод и отправляет.",["Проверьте корзину и комментарий","Попробуйте код LUNCH20","Отправьте — кухня получит заказ через секунду"]]},
+   en:["The order goes straight to the kitchen","No waiting to be noticed. The guest checks the cart, adds a note for the kitchen and sends it.",["Check the cart","Add a note — “no onions”","Send — the kitchen has it in a second"]],
+   ru:["Заказ сразу уходит на кухню","Не нужно ждать, пока заметят. Гость проверяет корзину, добавляет комментарий для кухни и отправляет.",["Проверьте корзину","Добавьте комментарий — «без лука»","Отправьте — кухня получит заказ через секунду"]]},
   {go:{role:"kitchen",screen:"kds"}, who:"kitchen",
    en:["The kitchen display","Orders arrive by station — grill, desserts, bar. A timer turns red when a new order waits more than 5 minutes or a dish takes more than 20.",["Accept the order","Mark it ready","The guest sees the status change"]],
    ru:["Кухонный экран","Заказы приходят по станциям — гриль, десерты, бар. Таймер краснеет, если новый заказ ждёт дольше 5 минут или блюдо готовится дольше 20.",["Примите заказ","Отметьте «готово»","Гость видит смену статуса"]]},
