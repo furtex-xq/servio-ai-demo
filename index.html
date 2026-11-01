@@ -14,6 +14,7 @@
 (function(){var h=location.hash,q=location.search;
  if(/^#(start|guest|waiter|kitchen|owner|admin)\b/.test(h)||/[?&](shot|prep)\b/.test(q)) location.replace("demo/"+q+h);})();
 </script>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("servio_theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Karla:wght@400;500;600;700&display=swap">
@@ -233,6 +234,47 @@ footer{background:var(--espresso);color:#BFB29C;padding:40px 0 54px;font-size:14
 footer .wrap{display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-between;align-items:center}
 footer a{color:var(--gold-pale)!important}
 
+/* theme switch */
+.theme{all:unset;cursor:pointer;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--hair-s);background:var(--paper);color:var(--ink);transition:transform .3s}
+.theme:hover{transform:rotate(18deg)}
+.theme svg{width:19px;height:19px}
+.theme .moon{display:none}
+:root[data-theme=dark] .theme .sun{display:none}
+:root[data-theme=dark] .theme .moon{display:block}
+
+/* ── Dark theme: warm espresso, bright accents — not the old near-black ───────────────────── */
+:root[data-theme=dark]{
+  --bg:#18120C; --bg2:#1F1810; --paper:#251D14; --card:rgba(37,29,20,.86);
+  --ink:#F8F0E2; --text:#F8F0E2; --muted:#C4B49C; --dim:#968670;
+  --hair:rgba(255,227,161,.12); --hair-s:rgba(255,227,161,.22);
+  --gold:#F2B630; --gold-deep:#F5C04A;
+  --gold-pale:rgba(242,182,48,.17); --coral-pale:rgba(240,110,70,.18); --sage-pale:rgba(96,170,122,.2); --sky-pale:rgba(84,150,230,.2); --plum-pale:rgba(170,110,215,.22);
+  --coral:#FF7A4D; --sage:#6CC08A; --sky:#62A6F5; --plum:#B88AE6; --ok:#43C77A;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 34px -16px rgba(0,0,0,.6);
+  --shadow-l:0 2px 4px rgba(0,0,0,.3),0 30px 70px -28px rgba(0,0,0,.75);
+  color-scheme:dark;
+}
+:root[data-theme=dark] body::before{background:
+  radial-gradient(42% 36% at 8% 10%,rgba(242,182,48,.24),transparent 70%),
+  radial-gradient(36% 32% at 96% 28%,rgba(255,122,77,.18),transparent 70%),
+  radial-gradient(40% 36% at 86% 96%,rgba(108,192,138,.15),transparent 70%),
+  radial-gradient(32% 32% at 8% 82%,rgba(98,166,245,.13),transparent 70%)}
+:root[data-theme=dark] ::selection{background:rgba(242,182,48,.4)}
+:root[data-theme=dark] .nav.solid{background:rgba(24,18,12,.82)}
+:root[data-theme=dark] .lang button[aria-pressed=true]{background:linear-gradient(95deg,var(--gold-br),var(--coral));color:#1A1006}
+:root[data-theme=dark] .btn-ghost:hover{background:var(--ink);color:#1A1006}
+:root[data-theme=dark] .ribbon{background:linear-gradient(95deg,var(--gold-br),#F59E2E 50%,var(--coral));color:#1A1006}
+:root[data-theme=dark] .ribbon .track span::after{color:#1A1006}
+:root[data-theme=dark] .medal{box-shadow:0 0 0 10px rgba(255,227,161,.08),0 0 0 11px var(--hair-s),0 40px 80px -30px #000,inset 0 0 60px rgba(242,182,48,.22)}
+:root[data-theme=dark] .chapter .num{background:linear-gradient(95deg,var(--gold-br),var(--coral));color:#1A1006}
+:root[data-theme=dark] .band-dark{background:radial-gradient(60% 80% at 80% 0%,rgba(242,182,48,.28),transparent 60%),radial-gradient(50% 70% at 0% 100%,rgba(255,122,77,.22),transparent 60%),#0F0B07;border:1px solid var(--hair-s)}
+:root[data-theme=dark] .card.pop{background:radial-gradient(80% 60% at 100% 0%,rgba(242,182,48,.38),transparent 60%),#100C07;border:1px solid rgba(242,182,48,.5)}
+:root[data-theme=dark] .contact{background:linear-gradient(120deg,rgba(242,182,48,.24),rgba(255,122,77,.18) 55%,rgba(108,192,138,.2)),var(--paper);border-color:var(--hair-s)}
+:root[data-theme=dark] .contact .lead{color:var(--muted)}
+:root[data-theme=dark] footer{background:#0E0A06;border-top:1px solid var(--hair)}
+:root[data-theme=dark] .card.problem::before{color:rgba(255,227,161,.07)}
+:root[data-theme=dark] .chapter .cap{background:rgba(30,23,15,.92)}
+
 /* motion */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
 .reveal.in{opacity:1;transform:none}
@@ -267,6 +309,10 @@ footer a{color:var(--gold-pale)!important}
     <div class="lang" role="group" aria-label="Language">
       <button data-lang="en" aria-pressed="true">EN</button><button data-lang="ru" aria-pressed="false">RU</button>
     </div>
+    <button class="theme" id="themeBtn" type="button" aria-label="Light or dark theme">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
+    </button>
     <a class="btn btn-gold btn-sm" href="demo/" data-t="nav_demo">Live demo</a>
   </div>
 </nav>
@@ -622,6 +668,7 @@ const RIBBON={en:["Table ordering","Kitchen display","Waiter calls","Live revenu
 function fillRibbon(){const w=RIBBON[lang].map(x=>`<span>${x}</span>`).join("");document.getElementById("ribbon").innerHTML=w+w}
 const _applyLang=applyLang; applyLang=function(){_applyLang();fillRibbon()};
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",fillRibbon));
+document.getElementById("themeBtn").addEventListener("click",()=>{const r=document.documentElement,t=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=t;try{localStorage.setItem("servio_theme",t)}catch(e){}});
 applyLang();
 </script>
 </body>
