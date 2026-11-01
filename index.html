@@ -548,7 +548,7 @@ addEventListener("scroll",()=>nav.classList.toggle("solid",scrollY>40),{passive:
 const cio = new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting) return;cio.unobserve(e.target);
   const el=e.target, raw=el.textContent.trim(), dec=(raw.split(".")[1]||"").length, to=parseFloat(raw);
   if(matchMedia("(prefers-reduced-motion:reduce)").matches||!isFinite(to)) return;
-  const t0=performance.now(), dur=1200;(function f(t){const k=Math.min(1,(t-t0)/dur),v=to*(1-Math.pow(1-k,3));el.textContent=k<1?v.toFixed(dec):raw;if(k<1)requestAnimationFrame(f)})(t0)}),{threshold:.6});
+  const t0=performance.now(), dur=1200;setTimeout(()=>{el.textContent=raw},dur+120);(function f(t){const k=Math.min(1,(t-t0)/dur),v=to*(1-Math.pow(1-k,3));el.textContent=k<1?v.toFixed(dec):raw;if(k<1)requestAnimationFrame(f)})(t0)}),{threshold:.6});
 document.querySelectorAll(".cnt").forEach(el=>cio.observe(el));
 document.getElementById("copyMail").addEventListener("click",e=>{const b=e.currentTarget;
   try{navigator.clipboard.writeText("supportservioai@gmail.com").then(()=>{b.textContent=lang==="ru"?T.ru.copied:"Copied";setTimeout(()=>{b.innerHTML=lang==="ru"?T.ru.ct_b2:EN.ct_b2},1600)})}catch(x){}});
