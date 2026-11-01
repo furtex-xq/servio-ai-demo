@@ -116,12 +116,23 @@ section{position:relative}
 .steps li{display:flex;gap:14px;align-items:flex-start;padding:13px 16px;border:1px solid var(--hair);border-radius:16px;background:rgba(255,255,255,.02);font-size:15.5px}
 .steps li b{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;background:rgba(212,175,55,.14);color:var(--gold-br)}
 @media (max-width:980px){
-  .tour-grid{grid-template-columns:1fr;gap:0}
-  .device{order:-1;top:68px;height:min(54vh,500px);z-index:5;padding:10px 0 14px;background:var(--ink);box-shadow:0 18px 22px -4px var(--ink)}
+  /* Small screens: the live phone is the backdrop of the whole tour, and each chapter passes over
+     it like a caption at the bottom — the phone is never squeezed into half the screen. */
+  .tour-grid{display:block;position:relative}
+  .device{position:sticky;top:0;height:100svh;z-index:0;padding:80px 0 0;display:flex;justify-content:center;align-items:flex-start}
+  .frame{height:min(74svh,640px)}
+  .device::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 60% at 50% 30%,transparent 55%,rgba(7,6,5,.55))}
   .progress,.try{display:none}
-  .chapter{min-height:auto;padding:46px 0;opacity:1}
-  .chapters{padding:20px 0 40px}
-  .chapter h3{font-size:28px}
+  .chapters{position:relative;z-index:2;margin-top:-100svh;padding:0;pointer-events:none}
+  .chapter{min-height:100svh;justify-content:flex-end;padding:0 0 22px;opacity:1}
+  .chapter>*{pointer-events:auto}
+  .chapter .cap{padding:20px 20px 18px;border-radius:22px;background:rgba(10,8,6,.86);border:1px solid var(--hair-s);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 -10px 40px -10px #000}
+  .chapter h3{font-size:24px;margin:8px 0 8px}
+  .chapter p{font-size:15px;margin-bottom:12px}
+  .steps{gap:6px}
+  .steps li{padding:8px 12px;font-size:13.5px;border-radius:12px}
+  .chapter:not(.on) .cap{opacity:.0;transform:translateY(20px)}
+  .chapter .cap{transition:opacity .45s ease,transform .45s ease}
 }
 
 /* film */
@@ -507,9 +518,9 @@ try{ const s=localStorage.getItem("servio_lang"); if(s==="ru"||s==="en") lang=s;
 
 const chapters = document.getElementById("chapters");
 function renderChapters(){
-  chapters.innerHTML = CH.map((c,i)=>{const [h,p,steps]=c[lang];return `<article class="chapter" data-i="${i}">
+  chapters.innerHTML = CH.map((c,i)=>{const [h,p,steps]=c[lang];return `<article class="chapter" data-i="${i}"><div class="cap">
     <div><span class="num">${String(i+1).padStart(2,"0")} / ${CH.length}</span><span class="who">${WHO[lang][c.who]}</span></div>
-    <h3>${h}</h3><p>${p}</p><ol class="steps">${steps.map((s,k)=>`<li><b>${k+1}</b><span>${s}</span></li>`).join("")}</ol></article>`}).join("");
+    <h3>${h}</h3><p>${p}</p><ol class="steps">${steps.map((s,k)=>`<li><b>${k+1}</b><span>${s}</span></li>`).join("")}</ol></div></article>`}).join("");
   observeChapters();
 }
 function applyLang(){
@@ -534,7 +545,7 @@ function observeChapters(){
   io = new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting) return;const i=+e.target.dataset.i;if(i===active) return;active=i;
     chapters.querySelectorAll(".chapter").forEach(c=>c.classList.toggle("on",+c.dataset.i===i));
     document.getElementById("prog").style.height=((i+1)/CH.length*100)+"%";send(CH[i].go);
-    const fr=document.getElementById("frame");fr.classList.remove("flip");void fr.offsetWidth;fr.classList.add("flip")})},{rootMargin:matchMedia("(max-width:980px)").matches?"-70% 0px -24% 0px":"-45% 0px -45% 0px"});
+    const fr=document.getElementById("frame");fr.classList.remove("flip");void fr.offsetWidth;fr.classList.add("flip")})},{rootMargin:"-45% 0px -45% 0px"});
   chapters.querySelectorAll(".chapter").forEach(c=>{io.observe(c);if(+c.dataset.i===active)c.classList.add("on")});
 }
 
