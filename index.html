@@ -97,9 +97,8 @@ section{position:relative}
 /* scrollytelling */
 .tour{padding:120px 0 40px}
 .tour-grid{display:grid;grid-template-columns:minmax(0,1fr) clamp(250px,36vw,400px);gap:clamp(28px,5vw,70px);align-items:start}
-.device{position:sticky;top:calc(50vh - 400px);height:800px;display:grid;justify-items:center}
-@media (max-height:880px){.device{top:84px;height:calc(100vh - 100px)}}
-.frame{position:relative;height:100%;aspect-ratio:390/844;max-width:100%;border-radius:46px;padding:9px;background:linear-gradient(145deg,#2a2419,#0d0b08 40%,#1b160e);box-shadow:0 0 0 1px rgba(247,230,190,.14),0 40px 90px -30px #000,0 0 80px -20px rgba(212,175,55,.25)}
+.device{position:sticky;top:max(84px,calc(50vh - 400px));display:grid;justify-items:center}
+.frame{position:relative;width:min(100%,calc((100vh - 120px) * 390 / 844),400px);aspect-ratio:390/844;border-radius:46px;padding:9px;background:linear-gradient(145deg,#2a2419,#0d0b08 40%,#1b160e);box-shadow:0 0 0 1px rgba(247,230,190,.14),0 40px 90px -30px #000,0 0 80px -20px rgba(212,175,55,.25)}
 .frame .glass{position:relative;width:100%;height:100%;border-radius:38px;overflow:hidden;background:#000}
 .frame iframe{position:absolute;left:0;top:0;width:390px;height:844px;border:0;transform-origin:0 0}
 .try{position:absolute;bottom:-34px;left:0;right:0;text-align:center;font-size:13px;color:var(--dim)}
@@ -120,7 +119,7 @@ section{position:relative}
      it like a caption at the bottom — the phone is never squeezed into half the screen. */
   .tour-grid{display:flex;flex-direction:column;position:relative}
   .device{order:-1;position:sticky;top:0;height:100svh;z-index:0;padding:80px 0 0;display:flex;justify-content:center;align-items:flex-start}
-  .frame{height:min(74svh,640px)}
+  .frame{width:min(80vw,calc(74svh * 390 / 844),300px)}
   .device::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 60% at 50% 30%,transparent 55%,rgba(7,6,5,.55))}
   .progress,.try{display:none}
   .chapters{position:relative;z-index:2;margin-top:-100svh;padding:0;pointer-events:none}
