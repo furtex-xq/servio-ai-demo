@@ -9,7 +9,7 @@
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("servio_theme")||"dark"}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Karla:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="legal.css">
+<link rel="stylesheet" href="legal.css?v=2">
 <style>
 .dl{max-width:1180px;margin:0 auto;padding:10px 20px 0;display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch}
 .dlcard{border-radius:28px;padding:30px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 20%,var(--paper)),var(--paper) 60%);border:1px solid var(--hair-s);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px}
@@ -97,7 +97,7 @@
 
 <footer><div class="in"><span>© Servio AI</span><a href="./" data-ru="Главная" data-en="Home">Главная</a><a href="terms.html" data-ru="Условия использования" data-en="Terms of Service">Условия использования</a><a href="privacy.html" data-ru="Политика конфиденциальности" data-en="Privacy Policy">Политика конфиденциальности</a><a href="mailto:supportservioai@gmail.com">supportservioai@gmail.com</a></div></footer>
 <aside id="toc" hidden></aside>
-<script src="legal.js"></script>
+<script src="legal.js?v=2"></script>
 <script>
 fetch("download/version.json",{cache:"no-store"}).then(r=>r.json()).then(v=>{
   document.getElementById("ver").textContent=v.versionName;
