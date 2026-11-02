@@ -25,7 +25,10 @@ a{color:var(--gold2)}
 .tabs{display:flex;border:1px solid var(--hair-s);border-radius:999px;overflow:hidden}
 .tabs button{all:unset;cursor:pointer;padding:6px 13px;font-size:13px;font-weight:700;color:var(--muted)}
 .tabs button[aria-pressed=true]{background:linear-gradient(95deg,var(--gold),var(--coral));color:#1A1006}
-@media (max-width:760px){.nav .links{display:none}.tabs{margin-left:auto}}
+.theme{all:unset;cursor:pointer;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--hair-s);color:var(--ink);transition:transform .3s}
+.theme:hover{transform:rotate(18deg)}.theme svg{width:18px;height:18px}.theme .moon{display:none}
+:root:not([data-theme=light]) .theme .sun{display:none}:root:not([data-theme=light]) .theme .moon{display:block}
+@media (max-width:760px){.nav .links{display:none}.theme{margin-left:auto}}
 
 .hero{max-width:1180px;margin:0 auto;padding:64px 20px 30px}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:700}

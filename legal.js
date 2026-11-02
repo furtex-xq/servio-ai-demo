@@ -26,5 +26,7 @@
   document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>set(b.dataset.l));
   const bar=document.querySelector(".bar");
   addEventListener("scroll",()=>{const h=document.documentElement;bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+"%"},{passive:true});
+  const tb=document.getElementById("themeBtn");
+  if(tb) tb.onclick=()=>{const r=document.documentElement,t=r.dataset.theme==="light"?"dark":"light";r.dataset.theme=t;try{localStorage.setItem("servio_theme",t)}catch(e){}};
   set(lang);
 })();
