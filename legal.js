@@ -5,7 +5,7 @@
   const toc=document.getElementById("toc");
   let spy;
   function build(){
-    const block=document.querySelector('[lang-block].on'); if(!block) return;
+    const block=document.querySelector('.doc[lang-block].on'); if(!block||!toc) return;
     const hs=[...block.querySelectorAll(".doc section h2")];
     toc.innerHTML=`<b>${lang==="ru"?"Содержание":"Contents"}</b>`+hs.map((h,i)=>{const id=lang+"-s"+(i+1);h.parentElement.id=id;
       return `<a href="#${id}"><span>${String(i+1).padStart(2,"0")}</span>${h.querySelector(".t").textContent}</a>`}).join("");
