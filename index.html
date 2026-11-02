@@ -639,10 +639,10 @@ new ResizeObserver(fit).observe(glass); fit();
 let ready=false, pending=null, active=-1;
 function send(go){const msg=Object.assign({servio:"go",lang},go);
   // the phone may have finished loading before this script ran (a cached visit)
-  if(!ready){try{if(app.contentDocument&&app.contentDocument.readyState==="complete"&&app.contentWindow.SCREENS)ready=true}catch(e){}}
+  if(!ready){try{if(app.contentDocument&&app.contentDocument.readyState==="complete"&&typeof app.contentWindow.jump==="function")ready=true}catch(e){}}
   if(!ready){pending=msg;return}try{app.contentWindow.postMessage(msg,location.origin)}catch(e){}}
 app.addEventListener("load",()=>{ready=true;if(pending){send(pending);pending=null}});
-setTimeout(function poll(){if(ready)return;try{if(app.contentDocument.readyState==="complete"&&app.contentWindow.SCREENS){ready=true;if(pending){const p=pending;pending=null;app.contentWindow.postMessage(p,location.origin)}return}}catch(e){}setTimeout(poll,300)},300);
+setTimeout(function poll(){if(ready)return;try{if(app.contentDocument.readyState==="complete"&&typeof app.contentWindow.jump==="function"){ready=true;if(pending){const p=pending;pending=null;app.contentWindow.postMessage(p,location.origin)}return}}catch(e){}setTimeout(poll,300)},300);
 
 let io;
 function observeChapters(){
