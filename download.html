@@ -109,7 +109,7 @@ fetch("download/version.json",{cache:"no-store"}).then(r=>r.json()).then(v=>{
 }).catch(()=>{});
 // A QR code pointing at this page, drawn by a public QR image service would leak the visit — draw it locally instead.
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 try{const box=document.createElement("div");new QRCode(box,{text:location.href.split("#")[0].split("?")[0],width:400,height:400,colorDark:"#1A1006",colorLight:"#ffffff"});
   setTimeout(()=>{const c=box.querySelector("canvas");if(c)document.getElementById("qrimg").src=c.toDataURL()},50)}catch(e){document.querySelector(".qr").style.display="none"}
