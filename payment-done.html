@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Оплата · Payment — Servio AI</title>
+<link rel="icon" href="mark.png">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("servio_theme")||"dark"}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Karla:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="legal.css?v=3">
+<style>
+  .done{max-width:520px;margin:12vh auto 0;padding:0 16px;text-align:center}
+  .done .mark{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;margin:0 auto 18px;font-size:34px}
+  .done .ok{background:rgba(212,175,95,.16);color:#d4af5f}
+  .done .no{background:rgba(255,255,255,.06);color:#bbb}
+  .done h1{font-family:"Playfair Display",serif;font-size:32px;margin:0 0 10px}
+  .done p{font-size:16px;line-height:1.55;opacity:.8;margin:0 0 8px}
+</style>
+</head>
+<body>
+<div class="bar"></div>
+<main class="done">
+  <div class="mark" id="mark">✓</div>
+  <h1 id="title"></h1>
+  <p id="body"></p>
+</main>
+<script>
+// Stripe sends people here after paying. Nothing is decided on this page: the payment is confirmed
+// to Servio's server by Stripe directly; this only says what to do next.
+(function(){
+  var q=new URLSearchParams(location.search), r=q.get("r"), ok=q.get("ok")==="1";
+  var ru=(navigator.language||"").toLowerCase().indexOf("ru")===0||(navigator.language||"").toLowerCase().indexOf("uk")===0;
+  var T={
+    subscription:{ok:["Спасибо, оплата прошла","Вернитесь в приложение Servio AI — тариф включится в течение минуты.","Thank you — payment received","Go back to the Servio AI app — your plan switches on within a minute."],
+                  no:["Оплата не завершена","Деньги не списаны. Вернитесь в приложение и попробуйте ещё раз.","Payment not completed","Nothing was charged. Go back to the app and try again."]},
+    order:{ok:["Оплачено, спасибо!","Заказ оплачен — планшет на столе это уже показывает. Приятного аппетита!","Paid — thank you!","Your order is paid; the tablet at your table already shows it. Enjoy your meal!"],
+           no:["Оплата не завершена","Деньги не списаны. Можно попробовать снова или оплатить официанту.","Payment not completed","Nothing was charged. Try again, or pay your waiter."]},
+    connect:{ok:["Данные отправлены","Вернитесь в приложение: приём карт включится, как только Stripe закончит проверку.","Details sent","Go back to the app: card payments switch on as soon as Stripe finishes checking."],
+             no:["Настройка не закончена","Вернитесь в приложение и нажмите «Продолжить настройку».","Setup not finished","Go back to the app and tap “Continue setup”."]}
+  };
+  var t=(T[r]||T.order)[ok?"ok":"no"], i=ru?0:2;
+  document.getElementById("title").textContent=t[i];
+  document.getElementById("body").textContent=t[i+1];
+  var m=document.getElementById("mark"); m.className="mark "+(ok?"ok":"no"); m.textContent=ok?"✓":"!";
+  document.documentElement.lang=ru?"ru":"en";
+})();
+</script>
+</body>
+</html>
