@@ -9,7 +9,7 @@
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("servio_theme")||"dark"}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Karla:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="legal.css?v=3">
+<link rel="stylesheet" href="legal.css?v=4">
 <link rel="stylesheet" href="site-ui.css?v=2">
 </head>
 <body>
@@ -33,10 +33,11 @@
   const L = (ru, en) => document.documentElement.lang === "ru" ? ru : en;
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const dt = s => s ? new Date(s).toLocaleString(document.documentElement.lang === "ru" ? "ru-RU" : "en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
-  let tab = "members", members = [], reqs = [], q = "", note = "";
+  let tab = "members", members = [], reqs = [], allowed = [], q = "", note = "", anote = "";
 
   async function refresh() {
-    const [m, r] = await Promise.all([sb.rpc("site_admin_members"), sb.rpc("site_admin_requests")]);
+    const [m, r, al] = await Promise.all([sb.rpc("site_admin_members"), sb.rpc("site_admin_requests"), sb.rpc("site_admin_allowed")]);
+    allowed = al.data || [];
     if (m.error || r.error) { app.innerHTML = `<div class="box"><div class="msg bad">${esc((m.error || r.error).message)}</div></div>`; return false; }
     members = m.data || []; reqs = r.data || []; return true;
   }
@@ -44,7 +45,12 @@
     const open = reqs.filter(x => !x.handled).length;
     const list = members.filter(x => !q || (x.email + " " + x.full_name + " " + x.company).toLowerCase().includes(q.toLowerCase()));
     let body = "";
-    if (tab === "members") body = `<div class="tools"><input id="q" placeholder="${L("Поиск по почте, имени, компании", "Search email, name, company")}" value="${esc(q)}"><span class="pill">${members.length} ${L("аккаунтов", "accounts")} · ${members.filter(x => x.demo_access).length} ${L("с демо", "with demo")}</span></div>
+    if (tab === "members") body = `<div class="card"><h2>${L("Дать доступ к демо по почте", "Give demo access by email")}</h2>
+      <p>${L("Человек получит демо, как только войдёт на сайт с этой почтой — даже если ещё не зарегистрирован.", "They get the demo as soon as they sign in with this address — even if they haven't registered yet.")}</p>
+      <form id="allow" class="tools"><input name="e" type="email" required placeholder="name@example.com"><button class="go" type="submit">${L("Дать доступ", "Give access")}</button></form>
+      ${anote ? `<div class="msg ${anote.startsWith("✓") ? "ok" : "bad"}">${esc(anote)}</div>` : ""}
+      <div class="tools" style="margin-top:10px">${allowed.map(a => `<span class="pill ${a.registered ? "ok" : ""}">${esc(a.email)}${a.registered ? "" : " · " + L("ещё не входил", "not signed in yet")}</span>`).join("")}</div></div>
+      <div class="tools"><input id="q" placeholder="${L("Поиск по почте, имени, компании", "Search email, name, company")}" value="${esc(q)}"><span class="pill">${members.length} ${L("аккаунтов", "accounts")} · ${members.filter(x => x.demo_access).length} ${L("с демо", "with demo")}</span></div>
       <div class="tw"><table class="tbl"><thead><tr><th>${L("Человек", "Person")}</th><th>${L("Компания", "Company")}</th><th>${L("Зарегистрирован", "Joined")}</th><th>${L("Был", "Last seen")}</th><th>${L("Демо", "Demo")}</th></tr></thead><tbody>
       ${list.map(x => `<tr><td><b>${esc(x.full_name || "—")}</b><small>${esc(x.email)}</small>${x.requested ? `<small style="color:var(--gold2)">● ${L("запросил доступ", "requested access")}</small>` : ""}</td><td>${esc(x.company)}</td><td>${dt(x.created_at)}</td><td>${dt(x.last_seen_at)}</td>
       <td><button class="sw ${x.demo_access ? "on" : ""}" data-u="${x.user_id}" aria-label="demo access"><i></i></button></td></tr>`).join("") || `<tr><td colspan="5">${L("Пока никого", "No one yet")}</td></tr>`}
@@ -56,7 +62,7 @@
         <td><button class="sw ${x.handled ? "on" : ""}" data-r="${x.id}" aria-label="handled"><i></i></button></td></tr>`; }).join("") || `<tr><td colspan="6">${L("Заявок пока нет", "No requests yet")}</td></tr>`}
       </tbody></table></div>`;
     if (tab === "demo") body = `<div class="card"><h2>${L("Сборка демо", "Demo build")}</h2>
-      <p>${L("Демо хранится в Supabase и выдаётся только одобренным аккаунтам. Кнопка загружает файл demo/build-src.html с сайта, сжимает его и сохраняет как новую версию. Только для главного владельца.", "The demo lives in Supabase and is served only to approved accounts. The button takes demo/build-src.html from the site, compresses it and stores it as the new version. Super owner only.")}</p>
+      <p>${L("Демо хранится в Supabase и выдаётся только одобренным аккаунтам. Кнопка загружает файл demo/build-src.html с сайта, сжимает его и сохраняет как новую версию. Файла на сайте обычно нет — его кладут туда только на время обновления демо и сразу убирают.", "The demo lives in Supabase and is served only to approved accounts. The button takes demo/build-src.html from the site, compresses it and stores it as the new version. The file is normally absent — it is put there only while updating the demo and removed right after.")}</p>
       <button class="go" id="pub">${L("Опубликовать демо из demo/build-src.html", "Publish demo from demo/build-src.html")}</button> ${note ? `<div class="msg ${note.startsWith("✓") ? "ok" : "bad"}" style="margin-top:14px">${esc(note)}</div>` : ""}</div>`;
     app.innerHTML = `<div class="eyebrow">${L("Админка сайта", "Site admin")}</div><h1>${L("Аккаунты и заявки", "Accounts and requests")}</h1>
       <div class="tabs2"><button data-t="members" aria-pressed="${tab === "members"}">${L("Аккаунты", "Accounts")}</button><button data-t="requests" aria-pressed="${tab === "requests"}">${L("Заявки на демо", "Demo requests")}${open ? `<span class="cnt">${open}</span>` : ""}</button><button data-t="demo" aria-pressed="${tab === "demo"}">${L("Демо", "Demo")}</button></div>${body}`;
@@ -70,6 +76,10 @@
       const r = reqs.find(x => String(x.id) === b.dataset.r); b.disabled = true;
       const { error } = await sb.rpc("site_admin_mark_request", { p_id: r.id, p_handled: !r.handled });
       if (!error) r.handled = !r.handled; render(); });
+    const af = document.getElementById("allow");
+    if (af) af.onsubmit = async e => { e.preventDefault(); const em = af.e.value.trim(); anote = "";
+      const { error } = await sb.rpc("site_admin_allow_email", { p_email: em });
+      anote = error ? error.message : "✓ " + L("Доступ выдан: ", "Access given: ") + em; await refresh(); render(); };
     const pub = document.getElementById("pub");
     if (pub) pub.onclick = async () => {
       pub.disabled = true; note = "";

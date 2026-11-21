@@ -13,6 +13,7 @@ html,body{margin:0;height:100%;background:#0A0806;color:#F4EADB;font:17px/1.6 "K
   background:radial-gradient(60% 50% at 50% 0%,rgba(242,182,48,.16),transparent 70%),#0A0806}
 .card{max-width:460px;text-align:center}
 .card img{width:76px;height:76px}
+.wm{font:600 30px Georgia,"Playfair Display",serif;margin-top:6px;letter-spacing:.01em}.wm i{font-style:italic;font-weight:600;background:linear-gradient(95deg,#F5C04A,#F59E2E 55%,#FF7A4D);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.06em;margin-left:.02em}
 h1{font:600 34px/1.15 Georgia,serif;margin:16px 0 10px}
 p{color:#C4B49C;margin:0 0 24px}
 a.b{display:inline-flex;padding:14px 24px;border-radius:999px;font-weight:800;text-decoration:none;margin:4px}
@@ -50,7 +51,7 @@ a.o{border:1.5px solid rgba(255,227,161,.3);color:#F4EADB}
     }
   } catch (e) { console.warn(e); }
   if (embed) { document.getElementById("lock").innerHTML = ""; return; }
-  document.getElementById("lock").innerHTML = `<div class="card"><img src="mark.png" alt="">
+  document.getElementById("lock").innerHTML = `<div class="card"><img src="mark.png" alt=""><div class="wm">Servio <i>AI</i></div>
     <h1>${state === "wait" ? L("Доступ скоро откроем", "Access is on its way") : L("Живое демо — по доступу", "The live demo is private")}</h1>
     <p>${state === "wait" ? L("Ваш аккаунт ещё не одобрен для демо. Запросите доступ в кабинете — мы ответим в течение дня.", "Your account isn't approved for the demo yet. Request access in your account — we reply within a day.")
       : L("Войдите или создайте аккаунт и запросите доступ. Весь остальной сайт открыт без регистрации.", "Sign in or create an account and request access. The rest of the site is open without an account.")}</p>
