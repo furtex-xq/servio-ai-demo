@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Karla:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="legal.css?v=4">
-<link rel="stylesheet" href="site-ui.css?v=2">
+<link rel="stylesheet" href="site-ui.css?v=3">
 </head>
 <body>
 <div class="bar"></div>
@@ -35,7 +35,9 @@
   const next = qs.get("next") === "demo" ? "demo" : "";
   const L = (ru, en) => document.documentElement.lang === "ru" ? ru : en;
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const APPLE = false;   // switch on once Sign in with Apple is configured in Supabase
+  const APPLE = false;
+  let checkType = "email", pendingProfile = null;
+  const langNow = () => document.documentElement.lang === "ru" ? "ru" : "en";   // switch on once Sign in with Apple is configured in Supabase
   let how = "link", mode = qs.get("signup") ? "up" : "in", view = "loading", info = null, me = null, msg = "", err = "";
 
   function msgs() { return (err ? `<div class="msg bad">${esc(err)}</div>` : "") + (msg ? `<div class="msg ok">${esc(msg)}</div>` : ""); }
@@ -62,12 +64,12 @@
           ${APPLE ? `<button class="sso a" type="button" data-p="apple"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.9zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg>${L("Продолжить с Apple", "Continue with Apple")}</button>` : ""}
         </div>
         <div class="or"><span>${L("или по почте", "or with email")}</span></div>
-        <div class="seg"><button data-h="link" aria-pressed="${how === "link"}">${L("Ссылка на почту", "Email link")}</button><button data-h="pass" aria-pressed="${how === "pass"}">${L("С паролем", "With password")}</button></div>
+        <div class="seg"><button data-h="link" aria-pressed="${how === "link"}">${L("Код на почту", "Email code")}</button><button data-h="pass" aria-pressed="${how === "pass"}">${L("С паролем", "With password")}</button></div>
         ${how === "link" ? `<form id="lk" autocomplete="on">
           <label>Email<input name="email" type="email" required autocomplete="email"></label>
           ${msgs()}
-          <button class="go" type="submit">${L("Получить ссылку для входа", "Email me a sign-in link")}</button>
-          <p class="fine">${L("Нет аккаунта — создадим автоматически. Пароль не нужен. Продолжая, вы принимаете", "No account yet? We'll create one. No password needed. By continuing you accept the")} <a href="terms.html">${L("Условия", "Terms")}</a> ${L("и", "and")} <a href="privacy.html">${L("Политику конфиденциальности", "Privacy Policy")}</a>.</p>
+          <button class="go" type="submit">${L("Получить письмо для входа", "Email me a sign-in link")}</button>
+          <p class="fine">${L("В письме будет кнопка и код. Нет аккаунта — создадим автоматически, пароль не нужен. Продолжая, вы принимаете", "The email has a button and a code. No account yet? We'll create one — no password needed. By continuing you accept the")} <a href="terms.html">${L("Условия", "Terms")}</a> ${L("и", "and")} <a href="privacy.html">${L("Политику конфиденциальности", "Privacy Policy")}</a>.</p>
         </form>` : `<div class="seg sm"><button data-m="in" aria-pressed="${mode === "in"}">${L("Вход", "Sign in")}</button><button data-m="up" aria-pressed="${mode === "up"}">${L("Регистрация", "Sign up")}</button></div>
         <form id="f" autocomplete="on">
           ${mode === "up" ? `<label>${L("Имя", "Name")}<input name="name" required maxlength="80" autocomplete="name"></label>
@@ -88,10 +90,22 @@
     }
     if (view === "check") {
       app.innerHTML = `<div class="box center"><div class="big">✉️</div><h1>${L("Проверьте почту", "Check your email")}</h1>
-        <p class="sub">${L("Мы отправили ссылку для входа на", "We sent a sign-in link to")} <b>${esc(info)}</b>. ${L("Откройте её — и вы окажетесь в аккаунте.", "Open it and you'll be signed in.")}</p>
+        <p class="sub">${L("Мы отправили письмо на", "We sent an email to")} <b>${esc(info)}</b>. ${checkType === "signup"
+          ? L("Введите код из письма, чтобы подтвердить почту.", "Enter the code from it to confirm your email.")
+          : L("Нажмите в нём кнопку «Войти» — или введите код ниже.", "Tap “Sign in” in it — or enter the code below.")}</p>
+        <form id="code" class="codef"><input name="c" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="••••••" required>
+        ${msgs()}<button class="go" type="submit">${L("Подтвердить", "Confirm")}</button></form>
         <p class="fine">${L("Письма нет? Проверьте «Спам» через пару минут.", "No email? Check your spam folder in a couple of minutes.")}</p>
         <button class="ghost" id="back">${L("Назад ко входу", "Back to sign in")}</button></div>`;
-      document.getElementById("back").onclick = () => { view = "auth"; mode = "in"; render(); };
+      document.getElementById("back").onclick = () => { view = "auth"; err = msg = ""; render(); };
+      document.getElementById("code").onsubmit = async e => {
+        e.preventDefault(); err = msg = ""; const b = e.target.querySelector(".go"); b.disabled = true;
+        const token = e.target.c.value.replace(/\D/g, "");
+        const { error } = await sb.auth.verifyOtp({ email: info, token, type: checkType });
+        if (error) { err = /expired|invalid/i.test(error.message) ? L("Код неверный или устарел. Запросите новый.", "The code is wrong or expired. Request a new one.") : translateError(error); render(); return; }
+        if (pendingProfile) { await sb.rpc("site_join", { p_full_name: pendingProfile.name, p_company: pendingProfile.company }); pendingProfile = null; }
+        await load(true);
+      };
       return;
     }
     if (view === "reset") {
@@ -158,10 +172,10 @@
       await load(true);
     } else {
       const name = f.name.value.trim(), company = f.company.value.trim();
-      const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: SITE + "account.html" + (next ? "?next=" + next : ""), data: { full_name: name, company, source: "site" } } });
+      const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: SITE + "account.html" + (next ? "?next=" + next : ""), data: { full_name: name, company, source: "site", lang: langNow() } } });
       if (error) { err = translateError(error); render(); return; }
       if (data.session) { await sb.rpc("site_join", { p_full_name: name, p_company: company }); await load(true); }
-      else { info = email; view = "check"; render(); }
+      else { info = email; checkType = "signup"; pendingProfile = { name, company }; view = "check"; render(); }
     }
   }
   const back = () => SITE + "account.html" + (next ? "?next=" + next : "");
@@ -173,9 +187,9 @@
   async function sendLink(e) {
     e.preventDefault(); err = msg = ""; const f = e.target, b = f.querySelector(".go"); b.disabled = true;
     const email = f.email.value.trim();
-    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: back(), shouldCreateUser: true, data: { source: "site" } } });
+    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: back(), shouldCreateUser: true, data: { source: "site", lang: langNow() } } });
     if (error) { err = translateError(error); render(); app.querySelector("input[name=email]").value = email; return; }
-    info = email; view = "check"; render();
+    info = email; checkType = "email"; view = "check"; render();
   }
   async function forgot() {
     const email = app.querySelector("input[name=email]").value.trim();
