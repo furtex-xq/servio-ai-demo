@@ -56,8 +56,8 @@
         <td><button class="sw ${x.handled ? "on" : ""}" data-r="${x.id}" aria-label="handled"><i></i></button></td></tr>`; }).join("") || `<tr><td colspan="6">${L("Заявок пока нет", "No requests yet")}</td></tr>`}
       </tbody></table></div>`;
     if (tab === "demo") body = `<div class="card"><h2>${L("Сборка демо", "Demo build")}</h2>
-      <p>${L("Демо хранится в Supabase и выдаётся только одобренным аккаунтам. Кнопка загружает файл demo/_src.html с сайта, сжимает его и сохраняет как новую версию. Только для главного владельца.", "The demo lives in Supabase and is served only to approved accounts. The button takes demo/_src.html from the site, compresses it and stores it as the new version. Super owner only.")}</p>
-      <button class="go" id="pub">${L("Опубликовать демо из demo/_src.html", "Publish demo from demo/_src.html")}</button> ${note ? `<div class="msg ${note.startsWith("✓") ? "ok" : "bad"}" style="margin-top:14px">${esc(note)}</div>` : ""}</div>`;
+      <p>${L("Демо хранится в Supabase и выдаётся только одобренным аккаунтам. Кнопка загружает файл demo/build-src.html с сайта, сжимает его и сохраняет как новую версию. Только для главного владельца.", "The demo lives in Supabase and is served only to approved accounts. The button takes demo/build-src.html from the site, compresses it and stores it as the new version. Super owner only.")}</p>
+      <button class="go" id="pub">${L("Опубликовать демо из demo/build-src.html", "Publish demo from demo/build-src.html")}</button> ${note ? `<div class="msg ${note.startsWith("✓") ? "ok" : "bad"}" style="margin-top:14px">${esc(note)}</div>` : ""}</div>`;
     app.innerHTML = `<div class="eyebrow">${L("Админка сайта", "Site admin")}</div><h1>${L("Аккаунты и заявки", "Accounts and requests")}</h1>
       <div class="tabs2"><button data-t="members" aria-pressed="${tab === "members"}">${L("Аккаунты", "Accounts")}</button><button data-t="requests" aria-pressed="${tab === "requests"}">${L("Заявки на демо", "Demo requests")}${open ? `<span class="cnt">${open}</span>` : ""}</button><button data-t="demo" aria-pressed="${tab === "demo"}">${L("Демо", "Demo")}</button></div>${body}`;
     app.querySelectorAll(".tabs2 button").forEach(b => b.onclick = () => { tab = b.dataset.t; render(); });
@@ -74,8 +74,8 @@
     if (pub) pub.onclick = async () => {
       pub.disabled = true; note = "";
       try {
-        const res = await fetch("demo/_src.html", { cache: "no-store" });
-        if (!res.ok) throw new Error(L("Файл demo/_src.html не найден на сайте", "demo/_src.html is not on the site") + ` (${res.status})`);
+        const res = await fetch("demo/build-src.html", { cache: "no-store" });
+        if (!res.ok) throw new Error(L("Файл demo/build-src.html не найден на сайте", "demo/build-src.html is not on the site") + ` (${res.status})`);
         const html = await res.text();
         if (!/<html/i.test(html) || html.length < 10000) throw new Error(L("Это не похоже на сборку демо", "That doesn't look like a demo build"));
         const b64 = await gzipB64(html);
