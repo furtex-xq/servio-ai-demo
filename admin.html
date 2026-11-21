@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Админка сайта — Servio AI</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="mark.png">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("servio_theme")||"dark"}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Karla:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="legal.css?v=3">
+<link rel="stylesheet" href="site-ui.css?v=1">
+</head>
+<body>
+<div class="bar"></div>
+<nav class="nav"><div class="in">
+  <a class="home" href="./"><img src="mark.png" alt="">Servio <i>AI</i></a>
+  <div class="links"><a href="./" data-ru="Главная" data-en="Home">Главная</a><a href="account.html" data-ru="Аккаунт" data-en="Account">Аккаунт</a><a class="cur" href="admin.html" data-ru="Админка" data-en="Admin">Админка</a></div>
+  <button class="theme" id="themeBtn" type="button" aria-label="Light or dark theme"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg></button>
+  <div class="tabs"><button data-l="ru">RU</button><button data-l="en">EN</button></div>
+</div></nav>
+
+<main class="acc adm" id="app"><div class="spin"></div></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
+<script src="auth.js?v=1"></script>
+<script src="legal.js?v=3"></script>
+<script>
+(function () {
+  const { sb, access, gzipB64 } = window.servio;
+  const app = document.getElementById("app");
+  const L = (ru, en) => document.documentElement.lang === "ru" ? ru : en;
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const dt = s => s ? new Date(s).toLocaleString(document.documentElement.lang === "ru" ? "ru-RU" : "en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
+  let tab = "members", members = [], reqs = [], q = "", note = "";
+
+  async function refresh() {
+    const [m, r] = await Promise.all([sb.rpc("site_admin_members"), sb.rpc("site_admin_requests")]);
+    if (m.error || r.error) { app.innerHTML = `<div class="box"><div class="msg bad">${esc((m.error || r.error).message)}</div></div>`; return false; }
+    members = m.data || []; reqs = r.data || []; return true;
+  }
+  function render() {
+    const open = reqs.filter(x => !x.handled).length;
+    const list = members.filter(x => !q || (x.email + " " + x.full_name + " " + x.company).toLowerCase().includes(q.toLowerCase()));
+    let body = "";
+    if (tab === "members") body = `<div class="tools"><input id="q" placeholder="${L("Поиск по почте, имени, компании", "Search email, name, company")}" value="${esc(q)}"><span class="pill">${members.length} ${L("аккаунтов", "accounts")} · ${members.filter(x => x.demo_access).length} ${L("с демо", "with demo")}</span></div>
+      <div class="tw"><table class="tbl"><thead><tr><th>${L("Человек", "Person")}</th><th>${L("Компания", "Company")}</th><th>${L("Зарегистрирован", "Joined")}</th><th>${L("Был", "Last seen")}</th><th>${L("Демо", "Demo")}</th></tr></thead><tbody>
+      ${list.map(x => `<tr><td><b>${esc(x.full_name || "—")}</b><small>${esc(x.email)}</small>${x.requested ? `<small style="color:var(--gold2)">● ${L("запросил доступ", "requested access")}</small>` : ""}</td><td>${esc(x.company)}</td><td>${dt(x.created_at)}</td><td>${dt(x.last_seen_at)}</td>
+      <td><button class="sw ${x.demo_access ? "on" : ""}" data-u="${x.user_id}" aria-label="demo access"><i></i></button></td></tr>`).join("") || `<tr><td colspan="5">${L("Пока никого", "No one yet")}</td></tr>`}
+      </tbody></table></div>`;
+    if (tab === "requests") body = `<div class="tw"><table class="tbl"><thead><tr><th>${L("Когда", "When")}</th><th>${L("Кто", "Who")}</th><th>${L("Связь", "Contact")}</th><th>${L("Ресторан / город", "Restaurant / city")}</th><th>${L("Сообщение", "Message")}</th><th>${L("Обработано", "Handled")}</th></tr></thead><tbody>
+      ${reqs.map(x => { const c = esc(x.contact), link = /@/.test(x.contact) ? `mailto:${c}` : /^[+\d][\d\s()-]{5,}$/.test(x.contact) ? `tel:${c.replace(/[^\d+]/g, "")}` : "";
+        return `<tr class="${x.handled ? "req done" : "req"}"><td>${dt(x.created_at)}</td><td><b>${esc(x.name)}</b>${x.user_id ? `<small>${L("с аккаунтом", "has an account")}</small>` : ""}</td><td>${link ? `<a href="${link}">${c}</a>` : c}</td>
+        <td>${esc(x.restaurant)}<small>${esc(x.city)}</small></td><td>${esc(x.message)}${x.when_text ? `<small>${L("Удобно", "Prefers")}: ${esc(x.when_text)}</small>` : ""}</td>
+        <td><button class="sw ${x.handled ? "on" : ""}" data-r="${x.id}" aria-label="handled"><i></i></button></td></tr>`; }).join("") || `<tr><td colspan="6">${L("Заявок пока нет", "No requests yet")}</td></tr>`}
+      </tbody></table></div>`;
+    if (tab === "demo") body = `<div class="card"><h2>${L("Сборка демо", "Demo build")}</h2>
+      <p>${L("Демо хранится в Supabase и выдаётся только одобренным аккаунтам. Кнопка загружает файл demo/_src.html с сайта, сжимает его и сохраняет как новую версию. Только для главного владельца.", "The demo lives in Supabase and is served only to approved accounts. The button takes demo/_src.html from the site, compresses it and stores it as the new version. Super owner only.")}</p>
+      <button class="go" id="pub">${L("Опубликовать демо из demo/_src.html", "Publish demo from demo/_src.html")}</button> ${note ? `<div class="msg ${note.startsWith("✓") ? "ok" : "bad"}" style="margin-top:14px">${esc(note)}</div>` : ""}</div>`;
+    app.innerHTML = `<div class="eyebrow">${L("Админка сайта", "Site admin")}</div><h1>${L("Аккаунты и заявки", "Accounts and requests")}</h1>
+      <div class="tabs2"><button data-t="members" aria-pressed="${tab === "members"}">${L("Аккаунты", "Accounts")}</button><button data-t="requests" aria-pressed="${tab === "requests"}">${L("Заявки на демо", "Demo requests")}${open ? `<span class="cnt">${open}</span>` : ""}</button><button data-t="demo" aria-pressed="${tab === "demo"}">${L("Демо", "Demo")}</button></div>${body}`;
+    app.querySelectorAll(".tabs2 button").forEach(b => b.onclick = () => { tab = b.dataset.t; render(); });
+    const qi = document.getElementById("q"); if (qi) qi.oninput = () => { q = qi.value; const p = qi.selectionStart; render(); const n = document.getElementById("q"); n.focus(); n.setSelectionRange(p, p); };
+    app.querySelectorAll("button[data-u]").forEach(b => b.onclick = async () => {
+      const m = members.find(x => x.user_id === b.dataset.u); b.disabled = true;
+      const { error } = await sb.rpc("site_admin_set_demo", { p_user_id: m.user_id, p_allow: !m.demo_access });
+      if (!error) m.demo_access = !m.demo_access; render(); });
+    app.querySelectorAll("button[data-r]").forEach(b => b.onclick = async () => {
+      const r = reqs.find(x => String(x.id) === b.dataset.r); b.disabled = true;
+      const { error } = await sb.rpc("site_admin_mark_request", { p_id: r.id, p_handled: !r.handled });
+      if (!error) r.handled = !r.handled; render(); });
+    const pub = document.getElementById("pub");
+    if (pub) pub.onclick = async () => {
+      pub.disabled = true; note = "";
+      try {
+        const res = await fetch("demo/_src.html", { cache: "no-store" });
+        if (!res.ok) throw new Error(L("Файл demo/_src.html не найден на сайте", "demo/_src.html is not on the site") + ` (${res.status})`);
+        const html = await res.text();
+        if (!/<html/i.test(html) || html.length < 10000) throw new Error(L("Это не похоже на сборку демо", "That doesn't look like a demo build"));
+        const b64 = await gzipB64(html);
+        const { error } = await sb.rpc("site_admin_set_asset", { p_name: "demo", p_body: b64 });
+        if (error) throw error;
+        note = `✓ ${L("Опубликовано", "Published")}: ${Math.round(html.length / 1024)} KB → ${Math.round(b64.length / 1024)} KB`;
+      } catch (e) { note = e.message || String(e); }
+      render();
+    };
+  }
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { location.replace("account.html"); return; }
+    const a = await access();
+    if (!a.admin) { app.innerHTML = `<div class="box"><h1>${L("Нет доступа", "No access")}</h1><p class="sub">${L("Эта страница только для администраторов Servio AI.", "This page is for Servio AI administrators only.")}</p><a class="ghost" href="account.html">${L("В кабинет", "To your account")}</a></div>`; return; }
+    if (await refresh()) render();
+    document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => setTimeout(render, 0)));
+  })();
+})();
+</script>
+</body>
+</html>

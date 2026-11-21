@@ -7,7 +7,16 @@
 <meta name="description" content="Servio AI connects the guest's table tablet, the kitchen display, the waiter's phone and the owner's dashboard into one system for restaurants, cafés and fast food.">
 <meta property="og:title" content="Servio AI — the whole restaurant on one system">
 <meta property="og:description" content="Table ordering, kitchen display, waiter calls and live revenue — one Android system for restaurants.">
-<meta property="og:image" content="media/poster-2026.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://servioai.net/">
+<meta property="og:site_name" content="Servio AI">
+<meta property="og:image" content="https://servioai.net/media/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Servio AI — the whole restaurant on one system">
+<meta name="twitter:image" content="https://servioai.net/media/og.jpg">
+<link rel="canonical" href="https://servioai.net/">
 <link rel="icon" href="mark.png">
 <script>
 // Links to the old demo address (#role/screen, ?shot, ?lang) keep working: they go to /demo/.
@@ -320,6 +329,58 @@ footer a{color:var(--gold-pale)!important}
   .hero .lead{margin:16px 0 26px}
   .facts{margin-top:26px}
 }
+
+/* --- accounts, films, gallery, calculator, FAQ, booking, presentation mode --- */
+.acct{position:relative;text-decoration:none}
+.acct svg{width:19px;height:19px}
+.acct i{position:absolute;right:1px;top:1px;width:9px;height:9px;border-radius:50%;background:var(--sage);box-shadow:0 0 0 2px var(--bg);display:none}
+.acct.in i{display:block}
+@media (max-width:600px){.acct{width:34px;height:34px}.acct svg{width:17px;height:17px}}
+@media (max-width:430px){.brand{font-size:0;gap:0}}
+.vtabs{display:flex;gap:10px;flex-wrap:wrap;margin:-24px 0 22px}
+.vtabs button{all:unset;cursor:pointer;padding:10px 18px;border-radius:999px;border:1px solid rgba(255,227,161,.25);color:#CFC3AE;font-weight:700;font-size:15px}
+.vtabs button[aria-pressed=true]{background:linear-gradient(95deg,var(--gold-br),var(--coral));color:#2A1503;border-color:transparent}
+.gal{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 4px 22px;margin:0 -4px;scrollbar-width:thin}
+.gal figure{flex:none;margin:0;width:clamp(190px,22vw,250px);scroll-snap-align:start}
+.gal .ph{border-radius:30px;padding:7px;background:linear-gradient(145deg,#3A2E1E,#120D07 45%,#2A2116);box-shadow:0 30px 60px -30px rgba(60,35,5,.6)}
+.gal img{display:block;width:100%;aspect-ratio:390/844;object-fit:cover;border-radius:24px;background:#000}
+.gal figcaption{margin-top:12px;font-weight:700}
+.gal figcaption small{display:block;color:var(--muted);font-weight:500;font-size:14px}
+.calc{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+.calc-in,.calc-out{background:var(--card);border:1px solid var(--hair);border-radius:26px;padding:28px;box-shadow:var(--shadow)}
+.calc-in{display:grid;gap:16px}
+.calc label,.book label{display:grid;gap:7px;font-weight:700;font-size:15px}
+.calc input,.book input,.book textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--paper);border:1px solid var(--hair-s);border-radius:14px;padding:12px 14px;width:100%}
+.calc input:focus,.book input:focus,.book textarea:focus{outline:none;border-color:var(--gold-br);box-shadow:0 0 0 3px rgba(242,182,48,.25)}
+.calc-out{display:grid;gap:14px;align-content:start}
+.calc-out div{display:grid;gap:2px;padding-bottom:12px;border-bottom:1px solid var(--hair)}
+.calc-out small{color:var(--muted);font-size:14px}
+.calc-out b{font-family:var(--display);font-size:32px;font-weight:600}
+.calc-out .net{border:0}.calc-out .net b{color:var(--sage);font-size:40px}.calc-out .net b.neg{color:var(--coral)}
+@media (max-width:900px){.calc{grid-template-columns:1fr}}
+.faq{display:grid;gap:12px;max-width:860px}
+.qa{background:var(--card);border:1px solid var(--hair);border-radius:20px;padding:0 24px;box-shadow:var(--shadow)}
+.qa summary{cursor:pointer;list-style:none;padding:20px 30px 20px 0;font-weight:700;font-size:18px;position:relative}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";position:absolute;right:0;top:16px;font-size:26px;color:var(--gold-br);transition:transform .25s}
+.qa[open] summary::after{transform:rotate(45deg)}
+.qa p{margin:0 0 20px;color:var(--muted)}
+.book{display:grid;gap:12px}
+.book .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.book .btn{justify-content:center}
+.bmsg{margin:0;font-weight:700;min-height:1px}.bmsg.ok{color:var(--ok)}.bmsg.bad{color:var(--coral)}
+.book .fine{margin:0;font-size:13px;color:var(--muted)}
+.book ::placeholder,.calc ::placeholder{color:var(--dim);opacity:.8}
+@media (max-width:600px){.book .two{grid-template-columns:1fr}}
+.frame .shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .35s}
+/* presentation mode: every section is a slide; arrows / space / PageDown move, Esc leaves */
+.pres .sec,.pres .cta,.pres .tour .sec-head{min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center}
+.pres .sec>.wrap,.pres .cta>.wrap{width:100%}
+.presbar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;display:none;align-items:center;gap:6px;padding:6px;border-radius:999px;background:rgba(24,18,12,.86);border:1px solid rgba(255,227,161,.25);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#F4EADB;font-weight:700;font-size:14px}
+.pres .presbar{display:flex}
+.presbar button{all:unset;cursor:pointer;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:18px}
+.presbar button:hover{background:rgba(255,227,161,.12)}
+.presbar span{min-width:64px;text-align:center}
 </style>
 </head>
 <body>
@@ -343,6 +404,7 @@ footer a{color:var(--gold-pale)!important}
       <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
       <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
     </button>
+    <a class="theme acct" id="acct" href="account.html" aria-label="Account" title="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg><i></i></a>
     <a class="btn btn-gold btn-sm" href="demo/?present" data-t="nav_demo">Live demo</a>
   </div>
 </nav>
@@ -424,14 +486,14 @@ footer a{color:var(--gold-pale)!important}
     <div class="sec-head reveal">
       <div class="eyebrow" data-t="t_eye">How it works</div>
       <h2 data-t="t_h">Scroll through <em>one evening</em> at a restaurant.</h2>
-      <p class="lead" data-t="t_p">The phone on the right is the real app running in your browser. It changes as you scroll — and you can tap it at any moment.</p>
+      <p class="lead" data-t="t_p">The phone shows the app screen by screen as you scroll. With demo access it is the live app — tap it at any moment.</p>
     </div>
     <div class="tour-grid">
       <div class="chapters" id="chapters"></div>
       <div class="device">
         <div class="frame" id="frame">
           <div class="progress"><i id="prog"></i></div>
-          <div class="glass"><iframe id="app" title="Servio AI live demo" src="demo/?embed#guest/welcome"></iframe></div>
+          <div class="glass"><iframe id="app" title="Servio AI live demo" data-src="demo/?embed#guest/welcome"></iframe></div>
           <div class="try" data-t="try">↑ live app — tap to try</div>
         </div>
       </div>
@@ -442,12 +504,16 @@ footer a{color:var(--gold-pale)!important}
 <section class="sec band-dark" id="film">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="eyebrow" data-t="v_eye">30 seconds</div>
+      <div class="eyebrow" data-t="v_eye">Films</div>
       <h2 data-t="v_h">From the table <em>to the report.</em></h2>
     </div>
+    <div class="vtabs reveal" role="tablist">
+      <button type="button" aria-pressed="true" data-v="0" data-t="v_t1">1 minute · the overview</button>
+      <button type="button" aria-pressed="false" data-v="1" data-t="v_t2">5 minutes · one evening, step by step</button>
+    </div>
     <div class="film reveal">
-      <video controls preload="none" playsinline poster="media/poster-2026.jpg">
-        <source src="media/servio-2026.mp4" type="video/mp4">
+      <video id="vid" controls preload="none" playsinline poster="media/poster-60s.jpg">
+        <source src="media/explainer-60s.mp4" type="video/mp4">
       </video>
     </div>
   </div>
@@ -466,6 +532,42 @@ footer a{color:var(--gold-pale)!important}
       <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></svg></div><h3 data-t="w4h">Connect a device with a code</h3><p data-t="w4p">The owner creates a code; a new tablet types it in and becomes a guest tablet, a kitchen screen or a waiter phone. No IT person needed.</p></div>
       <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h3 data-t="w5h">Each restaurant sees only its own data</h3><p data-t="w5p">Access is checked on the server for every request, not just hidden in the app. One restaurant can never read another's orders.</p></div>
       <div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><h3 data-t="w6h">Runs on ordinary Android tablets</h3><p data-t="w6p">No proprietary terminals. Any Android tablet or phone the restaurant already has, or buys off the shelf.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="screens" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow" data-t="g_eye">Inside the app</div>
+      <h2 data-t="g_h">Every role gets <em>its own screen.</em></h2>
+      <p class="lead" data-t="g_p">Screens from Servio AI with the demo restaurant “Golden Bite”. Swipe or scroll sideways.</p>
+    </div>
+    <div class="gal reveal" id="gal"></div>
+  </div>
+</section>
+
+<section class="sec" id="calc" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow" data-t="k_eye">Calculator</div>
+      <h2 data-t="k_h">What could it save <em>your restaurant?</em></h2>
+      <p class="lead" data-t="k_p">Put in your own numbers. This is arithmetic, not a promise — every figure below comes from what you type.</p>
+    </div>
+    <div class="calc reveal">
+      <div class="calc-in">
+        <label><span data-t="k1">Tables</span><input type="number" id="k_tables" min="1" max="100" value="12"></label>
+        <label><span data-t="k2">Orders per day</span><input type="number" id="k_orders" min="1" max="5000" value="80"></label>
+        <label><span data-t="k3">Staff minutes saved per order (your estimate)</span><input type="number" id="k_min" min="0" max="30" step="0.5" value="2"></label>
+        <label><span data-t="k4">Staff cost per hour, €</span><input type="number" id="k_cost" min="0" max="200" step="0.5" value="14"></label>
+        <label><span data-t="k5">Days open per month</span><input type="number" id="k_days" min="1" max="31" value="26"></label>
+      </div>
+      <div class="calc-out">
+        <div><small data-t="k_o1">Staff time freed per month</small><b id="k_hours">—</b></div>
+        <div><small data-t="k_o2">Worth at your hourly cost</small><b id="k_worth">—</b></div>
+        <div><small data-t="k_o3">Plan for your tables</small><b id="k_plan">—</b></div>
+        <div class="net"><small data-t="k_o4">Difference per month</small><b id="k_net">—</b></div>
+      </div>
     </div>
   </div>
 </section>
@@ -491,7 +593,17 @@ footer a{color:var(--gold-pale)!important}
         <ul><li data-t="pr3a">Up to 100 tablets</li><li data-t="pr3b">Everything in Standard</li><li data-t="pr3c">Reports and a larger AI allowance</li><li data-t="pr3d">Ready for several locations</li></ul>
       </div>
     </div>
-    <p class="note reveal" data-t="pr_note">Paying for a year costs less than twelve months: €999.99 for Standard, €2,499.99 for Pro. Online payment is being connected.</p>
+    <p class="note reveal" data-t="pr_note">Paying for a year costs less than twelve months: €999.99 for Standard, €2,499.99 for Pro. Pay by card through Stripe.</p>
+  </div>
+</section>
+
+<section class="sec" id="faq" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow" data-t="q_eye">Questions</div>
+      <h2 data-t="q_h">What restaurants <em>ask us first.</em></h2>
+    </div>
+    <div class="faq reveal"><details class="qa"><summary data-t="q1">What do I need to start?</summary><p data-t="a1">Android tablets for the tables, an Android phone for each waiter, a tablet or screen for the kitchen, and internet. Install the app, create your restaurant, add the menu and connect each device with a code.</p></details><details class="qa"><summary data-t="q2">How much does it cost?</summary><p data-t="a2">14 days free (up to 5 tablets, no card). Then Standard at €99.99 a month for up to 20 tablets or Pro at €249.99 for up to 100. Paying for a year is cheaper. The price is per restaurant, not per device.</p></details><details class="qa"><summary data-t="q3">What happens if the internet goes down?</summary><p data-t="a3">Service goes on. Every device keeps its own copy of the menu and the orders, and everything syncs as soon as the connection is back.</p></details><details class="qa"><summary data-t="q4">How do guests pay?</summary><p data-t="a4">As usual — cash or your card terminal — or by card on their own phone: the tablet shows a QR code and the payment goes through Stripe. For those card payments there is Stripe’s processing fee plus 0.1% for Servio.</p></details><details class="qa"><summary data-t="q5">Can the AI waiter make things up?</summary><p data-t="a5">It is built to answer only from your menu — dishes, ingredients, allergens, prep time. It does not search the internet, and when the menu has no answer it says so.</p></details><details class="qa"><summary data-t="q6">Which languages are there?</summary><p data-t="a6">English, German, Italian, French, Spanish, Polish, Czech, Ukrainian and Russian — for the whole app, the menu and the AI waiter.</p></details><details class="qa"><summary data-t="q7">Who can see our data?</summary><p data-t="a7">Only your restaurant. Access is checked on the server for every request, so one restaurant can never read another’s orders. You can delete the restaurant and its data from the settings.</p></details><details class="qa"><summary data-t="q8">Does it work on iPad or iPhone?</summary><p data-t="a8">The app is for Android today. Guests can pay by QR from any phone.</p></details><details class="qa"><summary data-t="q9">How long does setup take?</summary><p data-t="a9">Connecting a device takes about a minute with a code. Most of the time goes into adding your menu and photos.</p></details></div>
   </div>
 </section>
 
@@ -511,15 +623,16 @@ footer a{color:var(--gold-pale)!important}
           <li data-t="s1d">Menu with photos, floor plan, reservations, promotions, reviews, analytics</li>
           <li data-t="s1e">The whole interface in nine languages</li>
           <li data-t="s1f">A browser demo of every screen</li>
+          <li data-t="s1g">Card payments through Stripe: the owner's subscription and guests paying from their own phone</li>
+          <li data-t="s1i">Accounts on this website, with private access to the live demo</li>
         </ul>
       </div>
       <div class="card reveal">
         <h3><span class="dot next"></span><span data-t="s2h">Next</span></h3>
         <ul>
-          <li data-t="s2a">Online subscription payments</li>
+          <li data-t="s2a">Switching card payments from test to live mode</li>
           <li data-t="s2b">Release on Google Play</li>
           <li data-t="s2c">Pilot with the first restaurants</li>
-          <li data-t="s2d">Payment at the table</li>
         </ul>
       </div>
     </div>
@@ -543,16 +656,28 @@ footer a{color:var(--gold-pale)!important}
     <div class="contact reveal">
       <div>
         <div class="eyebrow" data-t="ct_eye">Contact</div>
-        <h2 style="margin-top:14px" data-t="ct_h">Questions, a pilot, <em>or a meeting?</em></h2>
-        <p class="lead" style="margin-top:14px" data-t="ct_p">Write to us — investors, restaurants that want to try Servio AI, and anyone with feedback. We answer every message.</p>
-      </div>
-      <div class="mailbox">
-        <a class="mail" href="mailto:supportservioai@gmail.com?subject=Servio%20AI">supportservioai@gmail.com</a>
-        <div class="hero-cta">
-          <a class="btn btn-gold" href="mailto:supportservioai@gmail.com?subject=Servio%20AI" data-t="ct_b1">Write to us</a>
-          <button class="btn btn-ghost" id="copyMail" type="button" data-t="ct_b2">Copy address</button>
+        <h2 style="margin-top:14px" data-t="ct_h">Book a demo <em>for your restaurant.</em></h2>
+        <p class="lead" style="margin-top:14px" data-t="ct_p">Leave your contact and a good time — we'll show Servio AI on your own menu and answer every question. Investors and partners are welcome too.</p>
+        <div class="mailbox" style="margin-top:22px">
+          <a class="mail" href="mailto:supportservioai@gmail.com?subject=Servio%20AI">supportservioai@gmail.com</a>
+          <div class="hero-cta">
+            <button class="btn btn-ghost" id="copyMail" type="button" data-t="ct_b2">Copy address</button>
+          </div>
         </div>
       </div>
+      <form class="book" id="book">
+        <label><span data-t="b1">Your name</span><input name="name" required maxlength="80" autocomplete="name"></label>
+        <label><span data-t="b2">Phone, email, Telegram or WhatsApp</span><input name="contact" required maxlength="120" autocomplete="tel"></label>
+        <div class="two">
+          <label><span data-t="b3">Restaurant</span><input name="rest" maxlength="120" autocomplete="organization"></label>
+          <label><span data-t="b4">City</span><input name="city" maxlength="80" autocomplete="address-level2"></label>
+        </div>
+        <label><span data-t="b5">When is good for you?</span><input name="when" maxlength="120"></label>
+        <label><span data-t="b6">Anything we should know?</span><textarea name="msg" rows="3" maxlength="1000"></textarea></label>
+        <button class="btn btn-gold" type="submit" data-t="b7">Request a demo</button>
+        <p class="bmsg" id="bmsg" role="status"></p>
+        <p class="fine" data-t="b8">We use these details only to contact you about Servio AI.</p>
+      </form>
     </div>
   </div>
 </section>
@@ -561,10 +686,12 @@ footer a{color:var(--gold-pale)!important}
   <div class="wrap">
     <span style="color:#F6EFE2">Servio <span style="color:var(--gold-br)">AI</span> · <span data-t="foot1">Smart service. Happy guests.</span></span>
     <a href="mailto:supportservioai@gmail.com" style="color:var(--muted)">supportservioai@gmail.com</a>
-    <a href="download.html" style="color:#BFB29C" data-t="f_dl">Download</a><a href="terms.html" style="color:#BFB29C" data-t="f_terms">Terms of Service</a><a href="privacy.html" style="color:#BFB29C" data-t="f_priv">Privacy Policy</a>
-    <span data-t="foot2">The demo restaurant “Golden Bite” is fictional. The demo runs entirely in your browser and sends nothing anywhere.</span>
+    <a href="?slides" id="presLink" style="color:#BFB29C" data-t="f_pres">Presentation mode</a><a href="account.html" style="color:#BFB29C" data-t="f_acc">Account</a><a href="download.html" style="color:#BFB29C" data-t="f_dl">Download</a><a href="terms.html" style="color:#BFB29C" data-t="f_terms">Terms of Service</a><a href="privacy.html" style="color:#BFB29C" data-t="f_priv">Privacy Policy</a>
+    <span data-t="foot2">The demo restaurant “Golden Bite” is fictional. The live demo is open to approved accounts and runs entirely in your browser.</span>
   </div>
 </footer>
+
+<div class="presbar" id="presbar"><button type="button" id="pPrev" aria-label="Previous">‹</button><span id="pNum">1 / 1</span><button type="button" id="pNext" aria-label="Next">›</button><button type="button" id="pFull" aria-label="Full screen">⛶</button><button type="button" id="pExit" aria-label="Exit">✕</button></div>
 
 <script>
 const CH = [
@@ -621,9 +748,9 @@ const T = {ru:{
  r3t:"В кармане официанта",r3h:"Телефон официанта",r3p:"Столы, заказы к выдаче и каждый вызов гостя — с номером стола.",
  r4t:"Для владельца",r4h:"Панель владельца",r4p:"Выручка, топ блюд, меню, план зала, команда, устройства и брони — откуда угодно.",
  t_eye:"Как это работает",t_h:"Пролистайте <em>один вечер</em> в ресторане.",
- t_p:"Телефон справа — настоящее приложение, запущенное в вашем браузере. Он меняется, пока вы листаете, — и его можно нажимать в любой момент.",
+ t_p:"Телефон показывает приложение экран за экраном, пока вы листаете. С доступом к демо это живое приложение — его можно нажимать в любой момент.",
  try:"↑ живое приложение — можно нажимать",
- v_eye:"30 секунд",v_h:"От стола <em>до отчёта.</em>",
+ v_eye:"Видео",v_h:"От стола <em>до отчёта.</em>",
  w_eye:"Сделано для настоящей смены",w_h:"Детали, которые решают <em>вечер пятницы.</em>",
  w1h:"Работает без интернета",w1p:"Каждое устройство хранит свою копию меню и заказов. Пропал интернет — работа продолжается; всё синхронизируется, когда связь вернётся.",
  w2h:"Девять языков",w2p:"Английский, немецкий, итальянский, французский, испанский, польский, чешский, украинский и русский. Турист переключает планшет на свой язык одним нажатием.",
@@ -635,16 +762,65 @@ const T = {ru:{
  pr1t:"Пробный период",pr1s:"14 дней",pr1a:"До 5 планшетов",pr1b:"Вся работа: столы, кухня, официант, владелец",pr1c:"ИИ-ассистент",pr1d:"Без карты",
  mo:"/ месяц",pr2a:"До 20 планшетов",pr2b:"Все основные функции ресторана",pr2c:"Расширенная аналитика",pr2d:"Управление командой",
  pop:"Популярный",pr3a:"До 100 планшетов",pr3b:"Всё из Standard",pr3c:"Отчёты и больший лимит ИИ",pr3d:"Готов для нескольких заведений",
- pr_note:"Оплата за год дешевле двенадцати месяцев: €999,99 за Standard, €2 499,99 за Pro. Онлайн-оплата подключается.",
+ pr_note:"Оплата за год дешевле двенадцати месяцев: €999,99 за Standard, €2 499,99 за Pro. Оплата картой через Stripe.",
  s_eye:"Где мы сейчас",s_h:"Рабочий продукт, <em>готовый к первым ресторанам.</em>",
  s1h:"Сделано и работает",s1a:"Android-приложение со всеми четырьмя ролями (Kotlin, Jetpack Compose)",s1b:"Облачная синхронизация между устройствами с правилами доступа ресторана на сервере",
  s1c:"Регистрация с подтверждением почты или через Google, активация устройств по коду",s1d:"Меню с фото, план зала, брони, акции, отзывы, аналитика",s1e:"Весь интерфейс на девяти языках",s1f:"Демо всех экранов в браузере",
- s2h:"Дальше",s2a:"Онлайн-оплата подписки",s2b:"Выпуск в Google Play",s2c:"Пилот с первыми ресторанами",s2d:"Оплата за столом",
+ s2h:"Дальше",s2a:"Перевод оплаты картой из тестового режима в боевой",s2b:"Выпуск в Google Play",s2c:"Пилот с первыми ресторанами",s2d:"Оплата за столом",
  c_h:"Посмотрите <em>сами.</em>",c_p:"Откройте живой ресторан на весь экран: столы заказывают, кухня готовит, официанты подают, владелец считает — все экраны приложения, управление с клавиатуры.",
- c_b1:"Открыть живое демо",nav_dl:"Скачать",hero_dl:"⬇ Скачать для Android",c_dl:"⬇ Скачать для Android",f_dl:"Скачать",f_terms:"Условия использования",f_priv:"Политика конфиденциальности",ch1a:"Новый заказ · Стол 7",ch1b:"отправлен на кухню",ch2a:"Заказ готов",ch2b:"официант уведомлён",ch3a:"9 языков",ch3b:"переключение в одно касание",nav_contact:"Контакты",ct_eye:"Контакты",ct_h:"Вопросы, пилот <em>или встреча?</em>",
- ct_p:"Пишите нам — инвесторы, рестораны, которые хотят попробовать Servio AI, и все, у кого есть отзыв. Мы отвечаем на каждое письмо.",
+ c_b1:"Открыть живое демо",nav_dl:"Скачать",hero_dl:"⬇ Скачать для Android",c_dl:"⬇ Скачать для Android",f_dl:"Скачать",f_terms:"Условия использования",f_priv:"Политика конфиденциальности",ch1a:"Новый заказ · Стол 7",ch1b:"отправлен на кухню",ch2a:"Заказ готов",ch2b:"официант уведомлён",ch3a:"9 языков",ch3b:"переключение в одно касание",nav_contact:"Контакты",ct_eye:"Контакты",ct_h:"Запишитесь на демо <em>для вашего ресторана.</em>",
+ ct_p:"Оставьте контакт и удобное время — покажем Servio AI на вашем меню и ответим на все вопросы. Инвесторам и партнёрам — тоже сюда.",
  ct_b1:"Написать нам",ct_b2:"Скопировать адрес",copied:"Скопировано",c_b2:"Смотреть видео",foot1:"Умный сервис. Довольные гости.",
- foot2:"Демо-ресторан «Golden Bite» вымышленный. Демо работает целиком в вашем браузере и никуда ничего не отправляет."
+ foot2:"Демо-ресторан «Golden Bite» вымышленный. Живое демо открыто одобренным аккаунтам и работает целиком в вашем браузере.",
+ v_t1:"1 минута · обзор",
+ v_t2:"5 минут · один вечер по шагам",
+ g_eye:"Внутри приложения",
+ g_h:"У каждой роли — <em>свой экран.</em>",
+ g_p:"Экраны Servio AI на примере демо-ресторана «Golden Bite». Листайте вбок.",
+ k_eye:"Калькулятор",
+ k_h:"Сколько это может сэкономить <em>вашему ресторану?</em>",
+ k_p:"Подставьте свои цифры. Это арифметика, а не обещание — всё ниже считается только из того, что вы ввели.",
+ k1:"Столов",
+ k2:"Заказов в день",
+ k3:"Минут персонала, сэкономленных на заказ (ваша оценка)",
+ k4:"Стоимость часа персонала, €",
+ k5:"Рабочих дней в месяц",
+ k_o1:"Освобождается времени персонала в месяц",
+ k_o2:"Стоит по вашей ставке",
+ k_o3:"Тариф под ваши столы",
+ k_o4:"Разница в месяц",
+ q_eye:"Вопросы",
+ q_h:"Что рестораны <em>спрашивают первым.</em>",
+ q1:"Что нужно, чтобы начать?",
+ a1:"Android-планшеты на столы, Android-телефон для каждого официанта, планшет или экран для кухни и интернет. Установите приложение, создайте ресторан, добавьте меню и подключите каждое устройство по коду.",
+ q2:"Сколько это стоит?",
+ a2:"14 дней бесплатно (до 5 планшетов, без карты). Дальше Standard — €99,99 в месяц до 20 планшетов, или Pro — €249,99 до 100. Оплата за год дешевле. Цена за ресторан, а не за устройство.",
+ q3:"Что если пропадёт интернет?",
+ a3:"Работа продолжается. Каждое устройство хранит свою копию меню и заказов, и всё синхронизируется, как только связь вернётся.",
+ q4:"Как платят гости?",
+ a4:"Как обычно — наличными или через ваш терминал — или картой со своего телефона: планшет показывает QR-код, оплата проходит через Stripe. За такие платежи — комиссия Stripe и 0,1% Servio.",
+ q5:"ИИ-официант может что-то выдумать?",
+ a5:"Он сделан отвечать только по вашему меню — блюда, состав, аллергены, время приготовления. Он не ищет в интернете, а если в меню ответа нет, так и говорит.",
+ q6:"Какие есть языки?",
+ a6:"Английский, немецкий, итальянский, французский, испанский, польский, чешский, украинский и русский — для всего приложения, меню и ИИ-официанта.",
+ q7:"Кто видит наши данные?",
+ a7:"Только ваш ресторан. Доступ проверяется на сервере при каждом запросе, поэтому один ресторан никогда не прочитает заказы другого. Ресторан и его данные можно удалить в настройках.",
+ q8:"Работает на iPad или iPhone?",
+ a8:"Сейчас приложение для Android. Платить по QR гости могут с любого телефона.",
+ q9:"Сколько занимает настройка?",
+ a9:"Подключение устройства по коду — около минуты. Больше всего времени уходит на меню и фото блюд.",
+ s1g:"Оплата картой через Stripe: подписка владельца и оплата гостем со своего телефона",
+ s1i:"Аккаунты на этом сайте и закрытый доступ к живому демо",
+ b1:"Ваше имя",
+ b2:"Телефон, почта, Telegram или WhatsApp",
+ b3:"Ресторан",
+ b4:"Город",
+ b5:"Когда вам удобно?",
+ b6:"Что нам стоит знать?",
+ b7:"Записаться на демо",
+ b8:"Мы используем эти данные только чтобы связаться с вами по Servio AI.",
+ f_pres:"Режим презентации",
+ f_acc:"Аккаунт"
 }};
 const EN = {};
 document.querySelectorAll("[data-t]").forEach(el=>EN[el.dataset.t]=el.innerHTML);
@@ -668,10 +844,11 @@ document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",
 
 // the phone: a 390×844 app screen scaled into whatever the frame's size is
 const app = document.getElementById("app"), glass = app.parentElement;
+let tourStatic = null;
 function fit(){const w=glass.clientWidth,h=glass.clientHeight;const s=Math.min(w/390,h/844);app.style.transform=`scale(${s})`;app.style.width=(w/s)+"px";app.style.height=(h/s)+"px"}
 new ResizeObserver(fit).observe(glass); fit();
 let ready=false, pending=null, active=-1;
-function send(go){const msg=Object.assign({servio:"go",lang},go);
+function send(go){if(tourStatic){tourStatic(go);return}const msg=Object.assign({servio:"go",lang},go);
   // the phone may have finished loading before this script ran (a cached visit)
   if(!ready){try{if(app.contentDocument&&app.contentDocument.readyState==="complete"&&typeof app.contentWindow.jump==="function")ready=true}catch(e){}}
   if(!ready){pending=msg;return}try{app.contentWindow.postMessage(msg,location.origin)}catch(e){}}
@@ -710,5 +887,8 @@ document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",
 document.getElementById("themeBtn").addEventListener("click",()=>{const r=document.documentElement,t=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=t;try{localStorage.setItem("servio_theme",t)}catch(e){}});
 applyLang();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" integrity="sha384-GFr3yTh5lJznCbZfpTtXnwboFsxqtTQoeTZCRHhE0579KrRmlCzen5AA8ohaB5ug" crossorigin="anonymous"></script>
+<script src="auth.js?v=1"></script>
+<script src="site.js?v=1"></script>
 </body>
 </html>
