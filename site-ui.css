@@ -59,3 +59,10 @@ input:focus,textarea:focus,select:focus{border-color:var(--gold);box-shadow:0 0 
 .req{display:grid;gap:4px}
 .req.done{opacity:.55}
 .cnt{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:var(--coral);color:#fff;font-size:12px;margin-left:6px}
+.oauth{display:grid;gap:10px;margin-bottom:6px}
+.sso{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:14px 18px;border-radius:999px;font:800 16px var(--body);cursor:pointer;border:1px solid var(--hair-s)}
+.sso.g{background:#fff;color:#1F1F1F;border-color:#dadce0}
+.sso.a{background:#000;color:#fff;border-color:#000}
+.or{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--dim);font-size:14px;font-weight:700}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--hair-s)}
+.seg.sm{margin-bottom:16px}.seg.sm button{padding:7px;font-size:14px}

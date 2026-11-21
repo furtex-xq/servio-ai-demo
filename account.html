@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Karla:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="legal.css?v=3">
-<link rel="stylesheet" href="site-ui.css?v=1">
+<link rel="stylesheet" href="site-ui.css?v=2">
 </head>
 <body>
 <div class="bar"></div>
@@ -35,7 +35,8 @@
   const next = qs.get("next") === "demo" ? "demo" : "";
   const L = (ru, en) => document.documentElement.lang === "ru" ? ru : en;
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  let mode = qs.get("signup") ? "up" : "in", view = "loading", info = null, me = null, msg = "", err = "";
+  const APPLE = false;   // switch on once Sign in with Apple is configured in Supabase
+  let how = "link", mode = qs.get("signup") ? "up" : "in", view = "loading", info = null, me = null, msg = "", err = "";
 
   function msgs() { return (err ? `<div class="msg bad">${esc(err)}</div>` : "") + (msg ? `<div class="msg ok">${esc(msg)}</div>` : ""); }
   function translateError(e) {
@@ -53,10 +54,21 @@
     if (view === "auth") {
       app.innerHTML = `<div class="box">
         <div class="eyebrow">${L("Аккаунт Servio AI", "Servio AI account")}</div>
-        <h1>${mode === "in" ? L("Вход", "Sign in") : L("Регистрация", "Create an account")}</h1>
+        <h1>${how === "pass" && mode === "up" ? L("Регистрация", "Create an account") : L("Вход и регистрация", "Sign in or sign up")}</h1>
         <p class="sub">${next === "demo" ? L("Живое демо закрытое. Войдите или зарегистрируйтесь — и запросите доступ.", "The live demo is private. Sign in or create an account, then request access.")
           : L("Сайт можно читать без аккаунта. Аккаунт нужен, чтобы получить доступ к живому демо.", "You can read the whole site without an account. An account lets you request access to the live demo.")}</p>
-        <div class="seg"><button data-m="in" aria-pressed="${mode === "in"}">${L("Вход", "Sign in")}</button><button data-m="up" aria-pressed="${mode === "up"}">${L("Регистрация", "Sign up")}</button></div>
+        <div class="oauth">
+          <button class="sso g" type="button" data-p="google"><svg viewBox="0 0 48 48" width="20" height="20"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>${L("Продолжить с Google", "Continue with Google")}</button>
+          ${APPLE ? `<button class="sso a" type="button" data-p="apple"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.9zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg>${L("Продолжить с Apple", "Continue with Apple")}</button>` : ""}
+        </div>
+        <div class="or"><span>${L("или по почте", "or with email")}</span></div>
+        <div class="seg"><button data-h="link" aria-pressed="${how === "link"}">${L("Ссылка на почту", "Email link")}</button><button data-h="pass" aria-pressed="${how === "pass"}">${L("С паролем", "With password")}</button></div>
+        ${how === "link" ? `<form id="lk" autocomplete="on">
+          <label>Email<input name="email" type="email" required autocomplete="email"></label>
+          ${msgs()}
+          <button class="go" type="submit">${L("Получить ссылку для входа", "Email me a sign-in link")}</button>
+          <p class="fine">${L("Нет аккаунта — создадим автоматически. Пароль не нужен. Продолжая, вы принимаете", "No account yet? We'll create one. No password needed. By continuing you accept the")} <a href="terms.html">${L("Условия", "Terms")}</a> ${L("и", "and")} <a href="privacy.html">${L("Политику конфиденциальности", "Privacy Policy")}</a>.</p>
+        </form>` : `<div class="seg sm"><button data-m="in" aria-pressed="${mode === "in"}">${L("Вход", "Sign in")}</button><button data-m="up" aria-pressed="${mode === "up"}">${L("Регистрация", "Sign up")}</button></div>
         <form id="f" autocomplete="on">
           ${mode === "up" ? `<label>${L("Имя", "Name")}<input name="name" required maxlength="80" autocomplete="name"></label>
           <label>${L("Ресторан или компания", "Restaurant or company")} <small>${L("необязательно", "optional")}</small><input name="company" maxlength="120" autocomplete="organization"></label>` : ""}
@@ -65,15 +77,18 @@
           ${msgs()}
           <button class="go" type="submit">${mode === "in" ? L("Войти", "Sign in") : L("Создать аккаунт", "Create account")}</button>
           ${mode === "in" ? `<button class="link" type="button" id="forgot">${L("Забыли пароль?", "Forgot your password?")}</button>` : `<p class="fine">${L("Регистрируясь, вы принимаете", "By signing up you accept the")} <a href="terms.html">${L("Условия", "Terms")}</a> ${L("и", "and")} <a href="privacy.html">${L("Политику конфиденциальности", "Privacy Policy")}</a>.</p>`}
-        </form></div>`;
-      app.querySelectorAll(".seg button").forEach(b => b.onclick = () => { mode = b.dataset.m; err = msg = ""; render(); });
+        </form>`}</div>`;
+      app.querySelectorAll(".seg button[data-h]").forEach(b => b.onclick = () => { how = b.dataset.h; err = msg = ""; render(); });
+      app.querySelectorAll(".sso").forEach(b => b.onclick = () => oauth(b.dataset.p));
+      const lk = document.getElementById("lk"); if (lk) lk.onsubmit = sendLink;
+      app.querySelectorAll(".seg button[data-m]").forEach(b => b.onclick = () => { mode = b.dataset.m; err = msg = ""; render(); });
       const fg = document.getElementById("forgot"); if (fg) fg.onclick = forgot;
-      document.getElementById("f").onsubmit = submit;
+      const f = document.getElementById("f"); if (f) f.onsubmit = submit;
       return;
     }
     if (view === "check") {
       app.innerHTML = `<div class="box center"><div class="big">✉️</div><h1>${L("Проверьте почту", "Check your email")}</h1>
-        <p class="sub">${L("Мы отправили ссылку для подтверждения на", "We sent a confirmation link to")} <b>${esc(info)}</b>. ${L("Откройте её — и вы окажетесь в аккаунте.", "Open it and you'll be signed in.")}</p>
+        <p class="sub">${L("Мы отправили ссылку для входа на", "We sent a sign-in link to")} <b>${esc(info)}</b>. ${L("Откройте её — и вы окажетесь в аккаунте.", "Open it and you'll be signed in.")}</p>
         <p class="fine">${L("Письма нет? Проверьте «Спам» через пару минут.", "No email? Check your spam folder in a couple of minutes.")}</p>
         <button class="ghost" id="back">${L("Назад ко входу", "Back to sign in")}</button></div>`;
       document.getElementById("back").onclick = () => { view = "auth"; mode = "in"; render(); };
@@ -148,6 +163,19 @@
       if (data.session) { await sb.rpc("site_join", { p_full_name: name, p_company: company }); await load(true); }
       else { info = email; view = "check"; render(); }
     }
+  }
+  const back = () => SITE + "account.html" + (next ? "?next=" + next : "");
+  async function oauth(provider) {
+    err = msg = "";
+    const { error } = await sb.auth.signInWithOAuth({ provider, options: { redirectTo: back() } });
+    if (error) { err = translateError(error); render(); }
+  }
+  async function sendLink(e) {
+    e.preventDefault(); err = msg = ""; const f = e.target, b = f.querySelector(".go"); b.disabled = true;
+    const email = f.email.value.trim();
+    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: back(), shouldCreateUser: true, data: { source: "site" } } });
+    if (error) { err = translateError(error); render(); app.querySelector("input[name=email]").value = email; return; }
+    info = email; view = "check"; render();
   }
   async function forgot() {
     const email = app.querySelector("input[name=email]").value.trim();
