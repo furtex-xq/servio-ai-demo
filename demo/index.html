@@ -31,6 +31,9 @@ a.o{border:1.5px solid rgba(255,227,161,.3);color:#F4EADB}
 <script>
 // The demo is private. This page only loads it for accounts an administrator has approved:
 // the code itself comes from site_get_demo() on the server, never from a public file.
+// It also runs only if it is exactly the build pinned here (SHA-256), so even someone able to change
+// the stored copy cannot get their own script onto this site. Update the hash with each new build.
+const DEMO_SHA256 = "cdb5d63b2c179fc6d83a31ba403ae820550bfbae22c6da602aac7fe30b860805";
 (async function () {
   const embed = new URLSearchParams(location.search).has("embed");
   const ru = /^(ru|uk)/.test((() => { try { return localStorage.getItem("servio_lang") } catch (e) { return "" } })() || navigator.language || "");
@@ -45,14 +48,20 @@ a.o{border:1.5px solid rgba(255,227,161,.3);color:#F4EADB}
       const { data, error } = await sb.rpc("site_get_demo");
       if (!error && data) {
         const html = await gunzipB64(data);
-        document.open(); document.write(html); document.close();
-        return;
+        const digest = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(html))))
+          .map(b => b.toString(16).padStart(2, "0")).join("");
+        if (digest === DEMO_SHA256) {
+          document.open(); document.write(html); document.close();
+          return;
+        }
+        console.warn("demo build does not match the pinned hash");
+        state = "update";
       }
     }
   } catch (e) { console.warn(e); }
   if (embed) { document.getElementById("lock").innerHTML = ""; return; }
   document.getElementById("lock").innerHTML = `<div class="card"><img src="mark.png" alt=""><div class="wm">Servio <i>AI</i></div>
-    <h1>${state === "wait" ? L("Доступ скоро откроем", "Access is on its way") : L("Живое демо — по доступу", "The live demo is private")}</h1>
+    <h1>${state === "update" ? L("Демо обновляется", "The demo is being updated") : state === "wait" ? L("Доступ скоро откроем", "Access is on its way") : L("Живое демо — по доступу", "The live demo is private")}</h1>
     <p>${state === "wait" ? L("Ваш аккаунт ещё не одобрен для демо. Запросите доступ в кабинете — мы ответим в течение дня.", "Your account isn't approved for the demo yet. Request access in your account — we reply within a day.")
       : L("Войдите или создайте аккаунт и запросите доступ. Весь остальной сайт открыт без регистрации.", "Sign in or create an account and request access. The rest of the site is open without an account.")}</p>
     <a class="b g" href="../account.html?next=demo">${state === "wait" ? L("В кабинет", "Your account") : L("Войти или зарегистрироваться", "Sign in or sign up")}</a>

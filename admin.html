@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Админка сайта — Servio AI</title>
 <meta name="robots" content="noindex">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://bvfcgrnrpjlbrzawmhqh.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<script>if (top !== self) top.location = self.location;</script>
 <link rel="icon" href="mark.png">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("servio_theme")||"dark"}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -91,7 +93,8 @@
         const b64 = await gzipB64(html);
         const { error } = await sb.rpc("site_admin_set_asset", { p_name: "demo", p_body: b64 });
         if (error) throw error;
-        note = `✓ ${L("Опубликовано", "Published")}: ${Math.round(html.length / 1024)} KB → ${Math.round(b64.length / 1024)} KB`;
+        const sha = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(html)))).map(b => b.toString(16).padStart(2, "0")).join("");
+        note = `✓ ${L("Опубликовано", "Published")}: ${Math.round(html.length / 1024)} KB → ${Math.round(b64.length / 1024)} KB · SHA-256 ${sha} — ${L("впишите его в demo/index.html", "put it in demo/index.html")}`;
       } catch (e) { note = e.message || String(e); }
       render();
     };
